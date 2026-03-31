@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Works — VOID∙GLYPH</title>
+<link rel="stylesheet" href="css/design.css">
+<style>
+/* ── Works header ─────────────────────────────────────── */
+.works-hero {
+  padding: 72px 48px 60px;
+  border-bottom: var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 40px;
+}
+.works-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 9vw, 110px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 0.9;
+}
+.works-hero-meta {
+  text-align: right;
+  padding-bottom: 8px;
+}
+.works-hero-meta p {
+  font-size: 10px;
+  line-height: 1.9;
+  color: var(--fg-dim);
+  letter-spacing: 0.2em;
+}
+
+/* ── Filter bar ──────────────────────────────────────── */
+.filter-bar {
+  padding: 18px 48px;
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.filter-label {
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  background: none;
+  border: none;
+  cursor: none;
+  transition: color 0.3s;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s;
+}
+.filter-btn:hover { color: var(--accent); }
+.filter-btn.active {
+  color: var(--bright);
+  border-bottom-color: var(--red);
+}
+
+/* ── Works grid ──────────────────────────────────────── */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-left: var(--border);
+}
+.work-card {
+  border-right: var(--border);
+  border-bottom: var(--border);
+  position: relative;
+  overflow: hidden;
+  background: var(--bg2);
+  cursor: none;
+  aspect-ratio: 4/5;
+  display: flex;
+  flex-direction: column;
+}
+.work-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 2;
+}
+.work-card:hover::before { opacity: 0.55; }
+.work-card:hover .work-info { opacity: 1; transform: translateY(0); }
+.work-card:hover .work-ascii-wrap { filter: brightness(0.6); }
+
+.work-ascii-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transition: filter 0.4s;
+}
+.work-ascii-wrap pre {
+  font-size: 6.5px;
+  line-height: 1.16;
+  letter-spacing: 0.5px;
+  color: var(--fg);
+  overflow: hidden;
+}
+
+.work-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 28px 28px 24px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s var(--ease-out);
+  z-index: 3;
+  background: linear-gradient(to top, rgba(7,7,7,0.98) 0%, rgba(7,7,7,0.6) 70%, transparent 100%);
+  padding-top: 60px;
+}
+.work-num {
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: var(--red);
+  display: block;
+  margin-bottom: 6px;
+}
+.work-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  display: block;
+  margin-bottom: 4px;
+}
+.work-year {
+  font-size: 8px;
+  letter-spacing: 0.4em;
+  color: var(--fg-muted);
+  display: block;
+  margin-bottom: 10px;
+}
+.work-medium {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--fg-dim);
+  display: block;
+}
+.work-arrow {
+  position: absolute;
+  top: 24px; right: 24px;
+  font-size: 18px;
+  color: var(--accent);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: all 0.35s var(--ease-out);
+  z-index: 3;
+}
+.work-card:hover .work-arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Pinned tag on first card */
+.work-tag {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-size: 7px;
+  letter-spacing: 0.4em;
+  color: var(--red);
+  border: 1px solid var(--red-dim);
+  padding: 4px 10px;
+  text-transform: uppercase;
+  z-index: 4;
+}
+
+/* ── Large featured row ──────────────────────────────── */
+.work-card.featured {
+  grid-column: span 2;
+  aspect-ratio: 8/5;
+}
+.work-card.featured .work-ascii-wrap pre {
+  font-size: 7px;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .works-grid { grid-template-columns: repeat(2, 1fr); }
+  .work-card.featured { grid-column: span 2; }
+  .works-hero { grid-template-columns: 1fr; }
+  .works-hero-meta { text-align: left; }
+}
+@media (max-width: 600px) {
+  .works-grid { grid-template-columns: 1fr; }
+  .work-card.featured { grid-column: span 1; aspect-ratio: 4/5; }
+  .works-hero { padding: 40px 24px; }
+  .filter-bar { padding: 16px 24px; gap: 20px; overflow-x: auto; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    VOID∙GLYPH
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="works.html">Works</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="nav-page-indicator" id="nav-indicator"></span>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="works-hero">
+    <h1 class="fade-up">Selected<br>Works</h1>
+    <div class="works-hero-meta fade-up">
+      <p>Six studies in light,<br>shadow &amp; the weight<br>of language · 2019–2024</p>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter —</span>
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Organic</button>
+    <button class="filter-btn">Geometric</button>
+    <button class="filter-btn">Portrait</button>
+    <button class="filter-btn">Abstract</button>
+  </div>
+
+  <div class="works-grid">
+
+    <!-- 1: Oculus — eye scene -->
+    <div class="work-card featured">
+      <div class="work-tag">Featured</div>
+      <div class="work-ascii-wrap">
+        <pre id="canvas-oculus" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 01</span>
+        <span class="work-title">Oculus</span>
+        <span class="work-year">2024</span>
+        <span class="work-medium">Proportional · Georgia · Variable weight · Eye iris study</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 2: Cascade — flowing waterfall -->
+    <div class="work-card">
+      <div class="work-ascii-wrap">
+        <pre id="canvas-cascade" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 02</span>
+        <span class="work-title">Cascade</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">IBM Plex Mono · 8pt · Vertical flow study</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 3: Meridian — diagonal light beam -->
+    <div class="work-card">
+      <div class="work-ascii-wrap">
+        <pre id="canvas-meridian" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 03</span>
+        <span class="work-title">Meridian</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">Garamond Italic · Diagonal chiaroscuro</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 4: Penumbra — sphere eclipse -->
+    <div class="work-card">
+      <div class="work-ascii-wrap">
+        <pre id="canvas-penumbra" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 04</span>
+        <span class="work-title">Penumbra</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">Futura Bold · Planetary eclipse rendering</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 5: Liminal — foggy horizon -->
+    <div class="work-card">
+      <div class="work-ascii-wrap">
+        <pre id="canvas-liminal" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 05</span>
+        <span class="work-title">Liminal</span>
+        <span class="work-year">2021</span>
+        <span class="work-medium">Variable weight Inter 100–900 · Atmospheric horizon</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 6: Threshold — vortex spiral -->
+    <div class="work-card">
+      <div class="work-ascii-wrap">
+        <pre id="canvas-threshold" class="ascii-render"></pre>
+      </div>
+      <div class="work-info">
+        <span class="work-num">No. 06</span>
+        <span class="work-title">Threshold</span>
+        <span class="work-year">2019</span>
+        <span class="work-medium">Didot Hairline · Logarithmic spiral vortex</span>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+  </div><!-- /works-grid -->
+
+  <footer id="footer">
+    <span>© 2026 VOID∙GLYPH Studio</span>
+    <span>All works original · Typographic ASCII</span>
+  </footer>
+
+</div>
+
+<script src="js/ascii-engine.js"></script>
+<script src="js/shared.js"></script>
+<script>
+// Each work gets its unique scene + appropriate cols/rows
+
+const scenes = [
+  { id: 'canvas-oculus',    fn: ASCII.sceneEye,       cols: 64, rows: 32, speed: 0.85 },
+  { id: 'canvas-cascade',   fn: ASCII.sceneCascade,   cols: 38, rows: 46, speed: 1.1  },
+  { id: 'canvas-meridian',  fn: ASCII.sceneMeridian,  cols: 38, rows: 46, speed: 0.7  },
+  { id: 'canvas-penumbra',  fn: ASCII.scenePenumbra,  cols: 38, rows: 46, speed: 0.6  },
+  { id: 'canvas-liminal',   fn: ASCII.sceneLiminal,   cols: 38, rows: 46, speed: 0.9  },
+  { id: 'canvas-threshold', fn: ASCII.sceneThreshold, cols: 38, rows: 46, speed: 1.0  },
+];
+
+scenes.forEach(({ id, fn, cols, rows, speed }) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let stopFn = null;
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !stopFn) {
+      stopFn = ASCII.animate(el, fn, cols, rows, speed);
+    } else if (!e.isIntersecting && stopFn) {
+      stopFn(); stopFn = null;
+    }
+  }, { threshold: 0.05 });
+  obs.observe(el);
+});
+
+// Filter buttons (visual only — all cards shown)
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
