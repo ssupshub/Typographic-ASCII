@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — VOID∙GLYPH</title>
+<link rel="stylesheet" href="css/design.css">
+<style>
+/* ── Contact layout ───────────────────────────────────── */
+.contact-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 64px - 57px);
+  border-bottom: var(--border);
+}
+
+/* LEFT: ASCII fill + big heading */
+.contact-left {
+  position: relative;
+  overflow: hidden;
+  border-right: var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 52px;
+}
+#contact-bg-canvas {
+  position: absolute;
+  inset: 0;
+  font-size: 8px;
+  line-height: 1.17;
+  letter-spacing: 0.5px;
+  color: var(--fg);
+  opacity: 0.18;
+  pointer-events: none;
+  display: block;
+  overflow: hidden;
+}
+.contact-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg) 0%,
+    rgba(7,7,7,0.2) 50%,
+    var(--bg2) 100%
+  );
+  pointer-events: none;
+}
+.contact-heading {
+  position: relative;
+  z-index: 2;
+}
+.contact-heading h1 {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 100px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 0.88;
+  margin-bottom: 24px;
+}
+.contact-heading p {
+  font-size: 11px;
+  line-height: 1.85;
+  color: var(--fg-muted);
+  max-width: 360px;
+}
+
+/* RIGHT: form + info */
+.contact-right {
+  padding: 72px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--bg2);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.field label {
+  font-size: 8px;
+  letter-spacing: 0.45em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+.field input,
+.field textarea,
+.field select {
+  background: var(--bg);
+  border: var(--border);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.3s;
+  resize: none;
+  -webkit-appearance: none;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--accent);
+}
+.field textarea { min-height: 120px; }
+.field select {
+  cursor: none;
+  color: var(--fg-muted);
+}
+.field select option { background: var(--bg); }
+
+.form-submit {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.form-note {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--fg-dim);
+  max-width: 220px;
+  line-height: 1.6;
+}
+#send-btn {
+  background: none;
+  border: var(--border-accent);
+  font-family: var(--font-mono);
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+}
+#send-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateX(-101%);
+  transition: transform 0.4s var(--ease-out);
+}
+#send-btn:hover::before { transform: translateX(0); }
+#send-btn:hover .btn-text { color: var(--bg); }
+.btn-text {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 14px 28px;
+  font-size: 9px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: color 0.4s;
+}
+
+/* Success state */
+.success-msg {
+  display: none;
+  padding: 20px;
+  border: 1px solid var(--accent2);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  line-height: 1.7;
+  margin-top: 20px;
+}
+.success-msg.visible { display: block; }
+
+/* ── Info strip ───────────────────────────────────────── */
+.info-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: var(--border);
+}
+.info-cell {
+  padding: 36px 40px;
+  border-right: var(--border);
+}
+.info-cell:last-child { border-right: none; }
+.info-cell-label {
+  font-size: 8px;
+  letter-spacing: 0.45em;
+  color: var(--red);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+.info-cell-val {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+}
+.info-cell-val a { color: var(--accent); border-bottom: 1px solid var(--accent2); }
+.info-cell-val a:hover { color: var(--bright); }
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .contact-wrap { grid-template-columns: 1fr; }
+  .contact-left { border-right: none; border-bottom: var(--border); min-height: 44vh; }
+  .contact-right { padding: 48px 32px; }
+  .info-strip { grid-template-columns: 1fr; }
+  .info-cell { border-right: none; border-bottom: var(--border); }
+}
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+  .form-submit { flex-direction: column; align-items: flex-start; }
+  .contact-right { padding: 40px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    VOID∙GLYPH
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="works.html">Works</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="nav-page-indicator" id="nav-indicator"></span>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="contact-wrap">
+
+    <!-- LEFT -->
+    <div class="contact-left">
+      <pre id="contact-bg-canvas" class="ascii-render"></pre>
+      <div class="contact-heading">
+        <span class="label">— Commissions &amp; Inquiry</span>
+        <h1>Let's<br>Make<br>Something</h1>
+        <p>Open for commissions, exhibitions, residencies, and institutional partnerships. Response within 48 hours.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: form -->
+    <div class="contact-right">
+      <span class="label">— Send a message</span>
+
+      <form id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="fname">First name</label>
+            <input type="text" id="fname" name="fname" placeholder="Ada" autocomplete="given-name">
+          </div>
+          <div class="field">
+            <label for="lname">Last name</label>
+            <input type="text" id="lname" name="lname" placeholder="Lovelace" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="ada@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label for="inquiry">Type of inquiry</label>
+          <select id="inquiry" name="inquiry">
+            <option value="" disabled selected>Select —</option>
+            <option>Commission · Original work</option>
+            <option>Exhibition · Solo</option>
+            <option>Exhibition · Group</option>
+            <option>Residency</option>
+            <option>Print · Large format</option>
+            <option>Press &amp; Editorial</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell me about the project — medium, scale, timeline, context..."></textarea>
+        </div>
+
+        <div class="form-submit">
+          <p class="form-note">All inquiries are read personally. No automated responses.</p>
+          <button type="submit" id="send-btn">
+            <span class="btn-text">Send Message</span>
+          </button>
+        </div>
+
+        <div class="success-msg" id="success-msg">
+          ✓ &nbsp; Message received. I'll be in touch within 48 hours.
+        </div>
+      </form>
+    </div>
+
+  </div><!-- /contact-wrap -->
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-cell fade-up">
+      <span class="info-cell-label">Email</span>
+      <div class="info-cell-val"><a href="mailto:hello@voidglyph.art">hello@voidglyph.art</a></div>
+    </div>
+    <div class="info-cell fade-up">
+      <span class="info-cell-label">Studio</span>
+      <div class="info-cell-val">Amsterdam, NL<br>Remote worldwide</div>
+    </div>
+    <div class="info-cell fade-up">
+      <span class="info-cell-label">Response</span>
+      <div class="info-cell-val">Within 48 hours<br>Mon – Fri</div>
+    </div>
+  </div>
+
+  <footer id="footer">
+    <span>© 2026 VOID∙GLYPH Studio</span>
+    <span>All works original · Typographic ASCII</span>
+  </footer>
+
+</div>
+
+<script src="js/ascii-engine.js"></script>
+<script src="js/shared.js"></script>
+<script>
+// Background ASCII (penumbra — atmospheric)
+(function() {
+  const el = document.getElementById('contact-bg-canvas');
+  const CW = 7.8, CH = 11.2;
+  const cols = Math.ceil(window.innerWidth / 2 / CW);
+  const rows = Math.ceil(window.innerHeight / CH);
+  ASCII.animate(el, ASCII.scenePenumbra, cols, rows, 0.6);
+})();
+
+// Form submit
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('send-btn');
+  const msg = document.getElementById('success-msg');
+  btn.querySelector('.btn-text').textContent = 'Sending…';
+  btn.disabled = true;
+  setTimeout(() => {
+    msg.classList.add('visible');
+    btn.querySelector('.btn-text').textContent = 'Sent ✓';
+    this.querySelectorAll('input, textarea, select').forEach(f => f.disabled = true);
+  }, 900);
+});
+</script>
+</body>
+</html>
