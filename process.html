@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Process — VOID∙GLYPH</title>
+<link rel="stylesheet" href="css/design.css">
+<style>
+/* ── Process hero ──────────────────────────────────────── */
+.process-hero {
+  padding: 72px 48px 60px;
+  border-bottom: var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: end;
+}
+.process-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 9vw, 112px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 0.88;
+}
+.process-hero-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 20px;
+  padding-bottom: 4px;
+}
+.process-hero-right p {
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--fg-muted);
+  max-width: 380px;
+}
+
+/* ── Live demo strip ──────────────────────────────────── */
+.demo-strip {
+  border-bottom: var(--border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.demo-cell {
+  border-right: var(--border);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.demo-cell:last-child { border-right: none; }
+.demo-cell-label {
+  font-size: 8px;
+  letter-spacing: 0.5em;
+  color: var(--accent);
+  text-transform: uppercase;
+  border-bottom: var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+.demo-cell pre {
+  font-size: 7px;
+  line-height: 1.15;
+  letter-spacing: 0.4px;
+  color: var(--fg);
+  overflow: hidden;
+}
+
+/* ── Steps ────────────────────────────────────────────── */
+.steps-section {
+  padding: 0 48px;
+}
+.step-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 480px;
+  gap: 0;
+  border-bottom: var(--border);
+  min-height: 240px;
+}
+.step-num-col {
+  border-right: var(--border);
+  display: flex;
+  align-items: flex-start;
+  padding: 48px 0 48px;
+}
+.step-num-col span {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bg2);
+  line-height: 1;
+  -webkit-text-stroke: 1px var(--fg-dim);
+}
+.step-content-col {
+  padding: 48px 48px 48px 40px;
+  border-right: var(--border);
+}
+.step-content-col h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.step-content-col p {
+  font-size: 12px;
+  line-height: 1.85;
+  color: var(--fg-muted);
+  max-width: 400px;
+  margin-bottom: 14px;
+}
+.step-content-col .detail {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--fg-dim);
+  margin-top: 20px;
+}
+.step-art-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg2);
+}
+.step-art-col pre {
+  font-size: 7px;
+  line-height: 1.14;
+  letter-spacing: 0.4px;
+  color: var(--fg);
+  overflow: hidden;
+}
+
+/* ── Character table ──────────────────────────────────── */
+.char-section {
+  padding: 80px 48px;
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+.char-section h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--bright);
+  margin-bottom: 48px;
+}
+.char-scale {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: var(--border);
+}
+.char-swatch {
+  flex: 1;
+  text-align: center;
+  padding: 12px 4px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  transition: background 0.2s;
+}
+.density-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 0.35em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .step-row { grid-template-columns: 80px 1fr 320px; }
+}
+@media (max-width: 900px) {
+  .process-hero { grid-template-columns: 1fr; }
+  .demo-strip { grid-template-columns: 1fr; }
+  .demo-cell { border-right: none; border-bottom: var(--border); }
+  .step-row { grid-template-columns: 60px 1fr; }
+  .step-art-col { display: none; }
+  .steps-section { padding: 0 24px; }
+  .process-hero { padding: 48px 24px; }
+  .char-section { padding: 48px 24px; }
+}
+@media (max-width: 600px) {
+  .step-num-col { display: none; }
+  .step-row { grid-template-columns: 1fr; }
+  .step-content-col { padding: 36px 24px; border-right: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    VOID∙GLYPH
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="works.html">Works</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="nav-page-indicator" id="nav-indicator"></span>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="process-hero">
+    <h1 class="fade-up">The<br>Method</h1>
+    <div class="process-hero-right fade-up">
+      <span class="label">— How a work is made</span>
+      <p>Every piece navigates the same four stages — from source image to final glyph arrangement. The machine handles measurement; the artist handles meaning.</p>
+      <a href="works.html" class="btn"><span>See the Results</span></a>
+    </div>
+  </div>
+
+  <!-- LIVE DEMO STRIP -->
+  <div class="demo-strip" aria-label="Live ASCII demos">
+    <div class="demo-cell">
+      <span class="demo-cell-label">01 · Source → Brightness</span>
+      <pre id="demo-eye" class="ascii-render"></pre>
+    </div>
+    <div class="demo-cell">
+      <span class="demo-cell-label">02 · Organic Flow</span>
+      <pre id="demo-cascade" class="ascii-render"></pre>
+    </div>
+    <div class="demo-cell">
+      <span class="demo-cell-label">03 · Geometric Light</span>
+      <pre id="demo-spiral" class="ascii-render"></pre>
+    </div>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps-section">
+
+    <div class="step-row fade-up">
+      <div class="step-num-col"><span>01</span></div>
+      <div class="step-content-col">
+        <h2>Source &amp; Luminance Mapping</h2>
+        <p>Every work begins with an image reduced to a single-channel luminance field — the map I'll navigate with type. I study where shadows pool, how gradients shift, the precise moment where light catches an edge.</p>
+        <p>This field is sampled at the resolution of the output character grid: typically 40–80 columns for print, 60–120 for screen works.</p>
+        <div class="detail">Tools: Custom Python pipeline · OpenCV · Manual study</div>
+      </div>
+      <div class="step-art-col">
+        <pre id="step-art-1" class="ascii-render"></pre>
+      </div>
+    </div>
+
+    <div class="step-row fade-up">
+      <div class="step-num-col"><span>02</span></div>
+      <div class="step-content-col">
+        <h2>Glyph Selection by Brightness &amp; Width</h2>
+        <p>Characters are chosen across two axes simultaneously: <strong style="color:var(--accent)">brightness value</strong> (how dark the glyph is at its rendered size) and <strong style="color:var(--accent)">measured pixel width</strong> (how much horizontal space it occupies in the chosen typeface).</p>
+        <p>Dense glyphs — M, #, @, W — anchor dark regions. Hairline glyphs — ·, !, l, | — breathe in the light. A monospace grid cannot do this; each character must earn its position by measurement.</p>
+        <div class="detail">No monospace assumptions — every character individually measured via canvas measureText()</div>
+      </div>
+      <div class="step-art-col">
+        <pre id="step-art-2" class="ascii-render"></pre>
+      </div>
+    </div>
+
+    <div class="step-row fade-up">
+      <div class="step-num-col"><span>03</span></div>
+      <div class="step-content-col">
+        <h2>Proportional Line Packing</h2>
+        <p>Using proportional font measurement — the technique pioneered in browser engines and recently formalised in libraries like Pretext — I pack glyphs tightly across each row, filling a target pixel width with characters whose widths sum exactly to that measure.</p>
+        <p>Variable weight and italic variants are assigned per-character to add tonal depth impossible in any monospace approach. A bold italic M and a light roman i at the same point size render very differently.</p>
+        <div class="detail">Implemented in TypeScript · Sub-pixel accuracy · Handles bidi, emoji, CJK</div>
+      </div>
+      <div class="step-art-col">
+        <pre id="step-art-3" class="ascii-render"></pre>
+      </div>
+    </div>
+
+    <div class="step-row fade-up">
+      <div class="step-num-col"><span>04</span></div>
+      <div class="step-content-col">
+        <h2>Hand Refinement</h2>
+        <p>The algorithm gives me a draft. Then I read it — character by character — adjusting awkward transitions, replacing glyphs that read as noise rather than form, reinforcing edges that have become soft.</p>
+        <p>The final work is always partly hand-edited. This is not a failure of the algorithm; it is the artist's hand in the work.</p>
+        <div class="detail">Refinement ratio: typically 8–15% of characters adjusted in final pass</div>
+      </div>
+      <div class="step-art-col">
+        <pre id="step-art-4" class="ascii-render"></pre>
+      </div>
+    </div>
+
+  </div><!-- /steps-section -->
+
+  <!-- CHARACTER DENSITY TABLE -->
+  <div class="char-section">
+    <span class="label">— Density palette</span>
+    <h2>Characters by Brightness</h2>
+    <div class="char-scale" id="char-scale"></div>
+    <div class="density-label">
+      <span>Light (low density)</span>
+      <span>Dark (high density)</span>
+    </div>
+  </div>
+
+  <footer id="footer">
+    <span>© 2026 VOID∙GLYPH Studio</span>
+    <span>All works original · Typographic ASCII</span>
+  </footer>
+
+</div>
+
+<script src="js/ascii-engine.js"></script>
+<script src="js/shared.js"></script>
+<script>
+// Live demo canvases
+ASCII.animate(document.getElementById('demo-eye'),     ASCII.sceneEye,       44, 18, 0.9);
+ASCII.animate(document.getElementById('demo-cascade'), ASCII.sceneCascade,   44, 18, 1.1);
+ASCII.animate(document.getElementById('demo-spiral'),  ASCII.sceneThreshold, 44, 18, 1.0);
+
+// Step art panels (static snapshots that subtly refresh)
+const stepScenes = [
+  { id: 'step-art-1', fn: ASCII.sceneEye,      cols: 42, rows: 22 },
+  { id: 'step-art-2', fn: ASCII.sceneMeridian, cols: 42, rows: 22 },
+  { id: 'step-art-3', fn: ASCII.sceneLiminal,  cols: 42, rows: 22 },
+  { id: 'step-art-4', fn: ASCII.scenePortrait, cols: 42, rows: 22 },
+];
+stepScenes.forEach(({ id, fn, cols, rows }) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let stopFn = null;
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !stopFn) {
+      stopFn = ASCII.animate(el, fn, cols, rows, 0.7);
+    } else if (!e.isIntersecting && stopFn) {
+      stopFn(); stopFn = null;
+    }
+  }, { threshold: 0.1 });
+  obs.observe(el);
+});
+
+// Character density scale
+(function buildCharScale() {
+  const palette = ASCII.PALETTES.standard;
+  const step = Math.max(1, Math.floor(palette.length / 40));
+  const scale = document.getElementById('char-scale');
+  if (!scale) return;
+  for (let i = 0; i < palette.length; i += step) {
+    const ch = palette[i];
+    const t = i / palette.length;
+    const swatch = document.createElement('div');
+    swatch.className = 'char-swatch';
+    swatch.textContent = ch === ' ' ? '·' : ch;
+    swatch.style.background = `rgba(${Math.round(t*30)},${Math.round(t*28)},${Math.round(t*24)},1)`;
+    swatch.style.color = t > 0.6 ? '#f0ece4' : '#5a5650';
+    scale.appendChild(swatch);
+  }
+})();
+</script>
+</body>
+</html>
