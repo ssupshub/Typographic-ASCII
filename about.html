@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — VOID∙GLYPH</title>
+<link rel="stylesheet" href="css/design.css">
+<style>
+/* ── About hero ──────────────────────────────────────── */
+.about-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 64px);
+  border-bottom: var(--border);
+}
+
+.about-portrait {
+  border-right: var(--border);
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.about-portrait::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%,
+    transparent 50%, rgba(7,7,7,0.7) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+#portrait-canvas {
+  font-size: 7px;
+  line-height: 1.14;
+  letter-spacing: 0.7px;
+  color: var(--fg);
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.about-text {
+  padding: 72px 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.about-text h1 {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 0.92;
+  margin-bottom: 28px;
+}
+.about-text .lead {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--fg-muted);
+  max-width: 420px;
+  margin-bottom: 20px;
+}
+.about-text .lead strong {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.about-quote {
+  margin: 36px 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--red);
+}
+.about-quote blockquote {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--bright);
+  line-height: 1.5;
+}
+.about-quote cite {
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  font-style: normal;
+  display: block;
+  margin-top: 12px;
+}
+
+/* ── CV / Timeline ───────────────────────────────────── */
+.cv-section {
+  padding: 80px 48px;
+  border-bottom: var(--border);
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 60px;
+}
+.cv-section h2 {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 1;
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+.timeline-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 28px;
+  padding: 28px 0;
+  border-top: var(--border);
+}
+.timeline-year {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--red);
+  padding-top: 3px;
+}
+.timeline-content h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 6px;
+}
+.timeline-content p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--fg-dim);
+}
+
+/* ── Skills ──────────────────────────────────────────── */
+.skills-grid {
+  padding: 80px 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-bottom: var(--border);
+}
+.skill-cell {
+  padding: 40px 32px;
+  border-right: var(--border);
+}
+.skill-cell:last-child { border-right: none; }
+.skill-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-style: italic;
+  color: var(--bright);
+  display: block;
+  margin-bottom: 16px;
+}
+.skill-bar-track {
+  height: 1px;
+  background: var(--fg-dim);
+  position: relative;
+  margin-bottom: 10px;
+}
+.skill-bar-fill {
+  position: absolute;
+  top: 0; left: 0; height: 1px;
+  background: var(--accent);
+  width: 0;
+  transition: width 1.2s var(--ease-out);
+}
+.skill-cell.visible .skill-bar-fill { width: var(--w); }
+.skill-pct {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  color: var(--fg-dim);
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .about-hero { grid-template-columns: 1fr; }
+  .about-portrait { border-right: none; border-bottom: var(--border); min-height: 50vh; }
+  .about-text { padding: 48px 32px; }
+  .cv-section { grid-template-columns: 1fr; }
+  .cv-section h2 { position: static; }
+  .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  .skill-cell:nth-child(2n) { border-right: none; }
+  .skill-cell { border-bottom: var(--border); }
+}
+@media (max-width: 480px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .skill-cell { border-right: none; }
+  .cv-section { padding: 48px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    VOID∙GLYPH
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="works.html">Works</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="process.html">Process</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="nav-page-indicator" id="nav-indicator"></span>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- HERO SPLIT -->
+  <div class="about-hero">
+    <div class="about-portrait">
+      <pre id="portrait-canvas" class="ascii-render"></pre>
+    </div>
+    <div class="about-text">
+      <span class="label">— The Artist</span>
+      <h1>Text<br>Made<br>Visible</h1>
+      <p class="lead">I work in the space between <strong>language and image</strong> — where a glyph is not merely a letter but a unit of density, weight, and luminous form.</p>
+      <p class="lead">Using proportional typography instead of monospace grids, I measure the <strong>exact pixel width</strong> of each character to sculpt images from pure text. No pixels, no rasters — only the alphabet, precisely placed.</p>
+      <div class="about-quote">
+        <blockquote>"Every character earns its exact position. The image emerges from constraint, not freedom."</blockquote>
+        <cite>— Studio statement, 2022</cite>
+      </div>
+      <a href="works.html" class="btn"><span>View Works</span></a>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <section class="cv-section">
+    <h2 class="fade-up">Selected<br>CV</h2>
+    <div class="timeline">
+      <div class="timeline-item fade-up">
+        <span class="timeline-year">2024</span>
+        <div class="timeline-content">
+          <h3>Glyph Space — Solo Exhibition</h3>
+          <p>Foam Kunsthuis, Amsterdam. Full-gallery installation of proportional ASCII works at architectural scale, printed on matte newsprint at 600dpi.</p>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <span class="timeline-year">2023</span>
+        <div class="timeline-content">
+          <h3>Type Directions 44 — Award of Excellence</h3>
+          <p>Type Directors Club, New York. Recognized for the Cascade and Meridian series as outstanding contributions to typographic art.</p>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <span class="timeline-year">2022</span>
+        <div class="timeline-content">
+          <h3>Monochrome Matter — Group Show</h3>
+          <p>Whitechapel Gallery, London. Contribution of Penumbra triptych alongside fifteen international artists working in computational art.</p>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <span class="timeline-year">2020</span>
+        <div class="timeline-content">
+          <h3>Residency — Fabrica Research Centre</h3>
+          <p>Six-month residency in Treviso developing the proportional glyph measurement technique that underpins all current works.</p>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <span class="timeline-year">2012</span>
+        <div class="timeline-content">
+          <h3>Studio Founded</h3>
+          <p>VOID∙GLYPH established as an independent typographic art practice, initially producing monospace works before the shift to proportional measurement in 2019.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <div class="skills-grid">
+    <div class="skill-cell fade-up" style="--w: 96%">
+      <span class="skill-name">Typography</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+      <span class="skill-pct">96 / 100</span>
+    </div>
+    <div class="skill-cell fade-up" style="--w: 88%">
+      <span class="skill-name">Noise & Form</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+      <span class="skill-pct">88 / 100</span>
+    </div>
+    <div class="skill-cell fade-up" style="--w: 82%">
+      <span class="skill-name">Print / Large Format</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+      <span class="skill-pct">82 / 100</span>
+    </div>
+    <div class="skill-cell fade-up" style="--w: 74%">
+      <span class="skill-name">Generative Systems</span>
+      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+      <span class="skill-pct">74 / 100</span>
+    </div>
+  </div>
+
+  <footer id="footer">
+    <span>© 2026 VOID∙GLYPH Studio</span>
+    <span>All works original · Typographic ASCII</span>
+  </footer>
+
+</div>
+
+<script src="js/ascii-engine.js"></script>
+<script src="js/shared.js"></script>
+<script>
+// Portrait
+(function() {
+  const el = document.getElementById('portrait-canvas');
+  const cols = 52, rows = 44;
+  el.textContent = ASCII.scenePortrait(cols, rows);
+  // Subtle slow redraw to simulate breathing
+  setInterval(() => {
+    el.textContent = ASCII.scenePortrait(cols, rows);
+  }, 4000);
+})();
+
+// Skill bars trigger on visible
+document.querySelectorAll('.skill-cell').forEach(cell => {
+  const obs = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) { cell.classList.add('visible'); obs.unobserve(cell); }
+  }, { threshold: 0.3 });
+  obs.observe(cell);
+});
+</script>
+</body>
+</html>
