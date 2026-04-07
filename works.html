@@ -4,76 +4,169 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Works — VOID∙GLYPH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap">
 <link rel="stylesheet" href="css/design.css">
 <style>
-/* ── Works header ─────────────────────────────────────── */
+
+/* ═══════════════════════════════════════════════
+   WORKS — HERO
+═══════════════════════════════════════════════ */
 .works-hero {
   padding: 72px 48px 60px;
   border-bottom: var(--border);
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1fr;
   align-items: end;
   gap: 40px;
 }
 .works-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(48px, 9vw, 110px);
+  font-size: clamp(52px, 9vw, 120px);
   font-weight: 700;
   font-style: italic;
   color: var(--bright);
-  line-height: 0.9;
+  line-height: 0.88;
 }
-.works-hero-meta {
-  text-align: right;
-  padding-bottom: 8px;
+.works-hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 6px;
 }
-.works-hero-meta p {
-  font-size: 10px;
+.works-hero-right p {
+  font-size: 10.5px;
   line-height: 1.9;
   color: var(--fg-dim);
   letter-spacing: 0.2em;
+  text-align: right;
+}
+.works-count {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: 700;
+  font-style: italic;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--fg-dim);
+  line-height: 1;
 }
 
-/* ── Filter bar ──────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   FILTER BAR
+═══════════════════════════════════════════════ */
 .filter-bar {
-  padding: 18px 48px;
+  padding: 16px 48px;
   border-bottom: var(--border);
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.filter-bar::-webkit-scrollbar { display: none; }
 .filter-label {
   font-size: 8px;
   letter-spacing: 0.5em;
   color: var(--fg-dim);
   text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .filter-btn {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8.5px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--fg-dim);
   background: none;
   border: none;
   cursor: none;
-  transition: color 0.3s;
   padding: 4px 0;
   border-bottom: 1px solid transparent;
-  transition: all 0.3s;
+  transition: all 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .filter-btn:hover { color: var(--accent); }
 .filter-btn.active {
   color: var(--bright);
   border-bottom-color: var(--red);
 }
+.works-view-toggle {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.view-btn {
+  background: none;
+  border: var(--border);
+  color: var(--fg-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  padding: 6px 14px;
+  cursor: none;
+  transition: all 0.25s;
+}
+.view-btn.active, .view-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent2);
+}
 
-/* ── Works grid ──────────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   WORKS GRID
+═══════════════════════════════════════════════ */
 .works-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border-left: var(--border);
+  border-top: var(--border);
 }
+
+/* LIST VIEW */
+.works-grid.list-view {
+  grid-template-columns: 1fr;
+  border-left: none;
+}
+.works-grid.list-view .work-card {
+  aspect-ratio: unset;
+  grid-column: span 1 !important;
+  flex-direction: row;
+  min-height: 180px;
+}
+.works-grid.list-view .work-card.featured {
+  min-height: 240px;
+}
+.works-grid.list-view .work-ascii-wrap {
+  width: 280px;
+  flex-shrink: 0;
+  padding: 20px;
+}
+.works-grid.list-view .work-info-static {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 36px;
+  opacity: 1;
+  transform: none;
+  position: relative;
+  background: none;
+}
+.works-grid.list-view .work-info {
+  display: none;
+}
+.works-grid.list-view .work-card::before { display: none; }
+.works-grid.list-view .work-card:hover .work-ascii-wrap { filter: none; }
+.works-grid.list-view .work-arrow {
+  top: 50%;
+  transform: translateY(-50%) translate(-4px, 0);
+}
+.works-grid.list-view .work-card:hover .work-arrow {
+  transform: translateY(-50%) translate(0, 0);
+}
+
 .work-card {
   border-right: var(--border);
   border-bottom: var(--border);
@@ -84,19 +177,29 @@
   aspect-ratio: 4/5;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s;
 }
+.work-card.featured {
+  grid-column: span 2;
+  aspect-ratio: 8/5;
+}
+.work-card.wide {
+  grid-column: span 3;
+  aspect-ratio: 16/5;
+}
+
 .work-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--bg);
+  background: rgba(7,7,7,0.7);
   opacity: 0;
-  transition: opacity 0.4s;
+  transition: opacity 0.35s;
   z-index: 2;
 }
-.work-card:hover::before { opacity: 0.55; }
+.work-card:hover::before { opacity: 1; }
 .work-card:hover .work-info { opacity: 1; transform: translateY(0); }
-.work-card:hover .work-ascii-wrap { filter: brightness(0.6); }
+.work-card:hover .work-ascii-wrap { filter: brightness(0.5); }
 
 .work-ascii-wrap {
   flex: 1;
@@ -104,38 +207,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  transition: filter 0.4s;
+  padding: 12px;
+  transition: filter 0.35s;
 }
-.work-ascii-wrap pre {
-  font-size: 6.5px;
-  line-height: 1.16;
-  letter-spacing: 0.5px;
-  color: var(--fg);
-  overflow: hidden;
-}
+.work-ascii-wrap canvas { display: block; }
 
 .work-info {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  padding: 28px 28px 24px;
+  padding: 56px 24px 22px;
   opacity: 0;
   transform: translateY(10px);
-  transition: all 0.4s var(--ease-out);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 3;
-  background: linear-gradient(to top, rgba(7,7,7,0.98) 0%, rgba(7,7,7,0.6) 70%, transparent 100%);
-  padding-top: 60px;
+  background: linear-gradient(to top, rgba(7,7,7,0.98) 0%, rgba(7,7,7,0.6) 65%, transparent 100%);
 }
 .work-num {
-  font-size: 8px;
+  font-size: 7.5px;
   letter-spacing: 0.5em;
   color: var(--red);
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 .work-title {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   font-style: italic;
   color: var(--bright);
@@ -143,67 +239,397 @@
   margin-bottom: 4px;
 }
 .work-year {
-  font-size: 8px;
+  font-size: 7.5px;
   letter-spacing: 0.4em;
   color: var(--fg-muted);
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .work-medium {
-  font-size: 8px;
-  letter-spacing: 0.2em;
+  font-size: 7.5px;
+  letter-spacing: 0.18em;
   color: var(--fg-dim);
   display: block;
+  margin-bottom: 14px;
 }
-.work-arrow {
-  position: absolute;
-  top: 24px; right: 24px;
-  font-size: 18px;
+.work-detail-hint {
+  font-size: 7px;
+  letter-spacing: 0.35em;
   color: var(--accent);
-  opacity: 0;
-  transform: translate(-4px, 4px);
-  transition: all 0.35s var(--ease-out);
-  z-index: 3;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.work-card:hover .work-arrow {
-  opacity: 1;
-  transform: translate(0, 0);
+.work-detail-hint::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
 }
 
-/* Pinned tag on first card */
+/* static info for list view */
+.work-info-static {
+  display: none;
+}
+.work-info-static .work-num { color: var(--red); font-size: 7.5px; letter-spacing: 0.5em; display: block; margin-bottom: 8px; }
+.work-info-static .work-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; font-style: italic; color: var(--bright); display: block; margin-bottom: 6px; }
+.work-info-static .work-year { font-size: 7.5px; letter-spacing: 0.4em; color: var(--fg-muted); display: block; margin-bottom: 10px; }
+.work-info-static .work-medium { font-size: 9px; letter-spacing: 0.14em; color: var(--fg-dim); display: block; margin-bottom: 14px; line-height: 1.6; }
+.work-info-static .work-tech-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.work-info-static .work-desc { font-size: 10px; line-height: 1.8; color: var(--fg-muted); max-width: 480px; }
+
+.work-arrow {
+  position: absolute;
+  top: 22px; right: 22px;
+  font-size: 15px;
+  color: var(--accent);
+  opacity: 0;
+  z-index: 3;
+  transform: translate(-4px, 4px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.work-card:hover .work-arrow { opacity: 1; transform: translate(0, 0); }
+
 .work-tag {
   position: absolute;
-  top: 20px; left: 20px;
+  top: 18px; left: 18px;
   font-size: 7px;
   letter-spacing: 0.4em;
   color: var(--red);
   border: 1px solid var(--red-dim);
-  padding: 4px 10px;
+  padding: 3px 10px;
   text-transform: uppercase;
   z-index: 4;
 }
 
-/* ── Large featured row ──────────────────────────────── */
-.work-card.featured {
-  grid-column: span 2;
-  aspect-ratio: 8/5;
-}
-.work-card.featured .work-ascii-wrap pre {
+/* Tech pills */
+.tech-pill {
   font-size: 7px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  border: 1px solid #2a2a28;
+  padding: 3px 9px;
 }
 
-/* ── Responsive ──────────────────────────────────────── */
-@media (max-width: 900px) {
+/* ═══════════════════════════════════════════════
+   WORK DETAIL MODAL
+═══════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(7,7,7,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--bg2);
+  border: var(--border);
+  max-width: 1080px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--fg-dim) var(--bg);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-canvas-side {
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  overflow: hidden;
+}
+.modal-canvas-side::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(7,7,7,0.6) 100%);
+  pointer-events: none;
+}
+#modal-canvas { display: block; }
+
+.modal-info-side {
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: var(--border);
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: none;
+  border: var(--border);
+  color: var(--fg-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 14px;
+  cursor: none;
+  z-index: 10;
+  transition: all 0.25s;
+}
+.modal-close:hover { color: var(--bright); border-color: var(--fg-dim); }
+
+.modal-num {
+  font-size: 9px;
+  letter-spacing: 0.5em;
+  color: var(--red);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 0.9;
+  margin-bottom: 8px;
+}
+.modal-year {
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  color: var(--fg-muted);
+  display: block;
+  margin-bottom: 28px;
+}
+
+.modal-divider {
+  height: 1px;
+  background: var(--border);
+  background: #222;
+  margin: 24px 0;
+}
+
+.modal-spec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.modal-spec {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.modal-spec-label {
+  font-size: 7.5px;
+  letter-spacing: 0.45em;
+  color: var(--red);
+  text-transform: uppercase;
+}
+.modal-spec-val {
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+}
+
+.modal-desc {
+  font-size: 11px;
+  line-height: 1.88;
+  color: var(--fg-muted);
+  margin-bottom: 24px;
+}
+
+.modal-process-note {
+  padding: 16px 20px;
+  border-left: 2px solid var(--red-dim);
+  background: rgba(176,58,30,0.05);
+  margin-bottom: 24px;
+}
+.modal-process-note p {
+  font-size: 10px;
+  line-height: 1.75;
+  color: var(--fg-dim);
+  font-style: italic;
+}
+
+.modal-tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 28px;
+}
+
+.modal-glyph-excerpt {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  line-height: 1.4;
+  letter-spacing: 0.3px;
+  color: var(--fg-dim);
+  border: var(--border);
+  padding: 14px;
+  background: var(--bg);
+  overflow: hidden;
+  max-height: 80px;
+  margin-bottom: 28px;
+  white-space: pre;
+}
+
+.modal-nav {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: var(--border);
+}
+.modal-nav-btn {
+  flex: 1;
+  background: none;
+  border: var(--border);
+  color: var(--fg-dim);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  padding: 12px;
+  cursor: none;
+  transition: all 0.25s;
+  text-align: center;
+}
+.modal-nav-btn:hover { color: var(--accent); border-color: var(--accent2); }
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHIC DETAIL SECTION
+═══════════════════════════════════════════════ */
+.typo-detail-section {
+  border-top: var(--border);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.typo-stat-cell {
+  padding: 36px 32px;
+  border-right: var(--border);
+  border-bottom: var(--border);
+}
+.typo-stat-cell:nth-child(4n) { border-right: none; }
+.typo-stat-big {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 1;
+  display: block;
+  margin-bottom: 8px;
+}
+.typo-stat-label {
+  font-size: 8px;
+  letter-spacing: 0.4em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+}
+
+.type-ramp-section {
+  border-bottom: var(--border);
+  padding: 52px 48px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 52px;
+  align-items: start;
+}
+.type-ramp-label {
+  position: sticky;
+  top: 80px;
+}
+.type-ramp-label h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 12px;
+}
+.type-ramp-label p {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--fg-dim);
+}
+.type-ramp-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.type-ramp-row {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: var(--border);
+}
+.type-ramp-size {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  color: var(--red);
+  text-transform: uppercase;
+}
+.type-ramp-sample {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .modal { grid-template-columns: 1fr; }
+  .modal-canvas-side { min-height: 320px; }
+  .modal-info-side { border-left: none; border-top: var(--border); }
+}
+@media (max-width: 960px) {
+  .works-hero { grid-template-columns: 1fr; }
+  .works-hero-right { align-items: flex-start; }
+  .works-hero-right p { text-align: left; }
   .works-grid { grid-template-columns: repeat(2, 1fr); }
   .work-card.featured { grid-column: span 2; }
-  .works-hero { grid-template-columns: 1fr; }
-  .works-hero-meta { text-align: left; }
+  .work-card.wide { grid-column: span 2; aspect-ratio: 8/5; }
+  .typo-detail-section { grid-template-columns: repeat(2, 1fr); }
+  .typo-stat-cell:nth-child(4n) { border-right: var(--border); }
+  .typo-stat-cell:nth-child(2n) { border-right: none; }
+  .type-ramp-section { grid-template-columns: 1fr; }
+  .type-ramp-label { position: static; }
+  .works-hero { padding: 48px 28px 40px; }
+  .filter-bar { padding: 16px 28px; }
 }
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .works-grid { grid-template-columns: 1fr; }
-  .work-card.featured { grid-column: span 1; aspect-ratio: 4/5; }
-  .works-hero { padding: 40px 24px; }
-  .filter-bar { padding: 16px 24px; gap: 20px; overflow-x: auto; }
+  .work-card.featured, .work-card.wide { grid-column: span 1; aspect-ratio: 4/5; }
+  .typo-detail-section { grid-template-columns: repeat(2, 1fr); }
+  .modal-spec-grid { grid-template-columns: 1fr; }
+  .works-grid.list-view .work-card { flex-direction: column; }
+  .works-grid.list-view .work-ascii-wrap { width: 100%; height: 200px; }
 }
 </style>
 </head>
@@ -227,155 +653,1108 @@
   <span class="nav-page-indicator" id="nav-indicator"></span>
 </nav>
 
+<!-- ═══ WORK DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal">
+    <div class="modal-canvas-side">
+      <button class="modal-close" id="modal-close" title="Close">✕ Close</button>
+      <canvas id="modal-canvas"></canvas>
+    </div>
+    <div class="modal-info-side" id="modal-info">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
 <div class="page-wrap">
 
+  <!-- HERO -->
   <div class="works-hero">
     <h1 class="fade-up">Selected<br>Works</h1>
-    <div class="works-hero-meta fade-up">
-      <p>Six studies in light,<br>shadow &amp; the weight<br>of language · 2019–2024</p>
+    <div class="works-hero-right fade-up">
+      <span class="works-count">12</span>
+      <p>Twelve studies in light,<br>shadow &amp; the weight<br>of language · 2016–2024</p>
     </div>
   </div>
 
+  <!-- FILTER + VIEW TOGGLE -->
   <div class="filter-bar">
     <span class="filter-label">Filter —</span>
-    <button class="filter-btn active">All</button>
-    <button class="filter-btn">Organic</button>
-    <button class="filter-btn">Geometric</button>
-    <button class="filter-btn">Portrait</button>
-    <button class="filter-btn">Abstract</button>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="organic">Organic</button>
+    <button class="filter-btn" data-filter="geometric">Geometric</button>
+    <button class="filter-btn" data-filter="portrait">Portrait</button>
+    <button class="filter-btn" data-filter="typographic">Typographic</button>
+    <button class="filter-btn" data-filter="abstract">Abstract</button>
+    <div class="works-view-toggle">
+      <button class="view-btn active" id="view-grid" title="Grid view">⊞ Grid</button>
+      <button class="view-btn" id="view-list" title="List view">≡ List</button>
+    </div>
   </div>
 
-  <div class="works-grid">
+  <!-- WORKS GRID -->
+  <div class="works-grid" id="works-grid">
 
-    <!-- 1: Oculus — eye scene -->
-    <div class="work-card featured">
+    <!-- 01 — Oculus -->
+    <div class="work-card featured" data-category="organic" data-index="0">
       <div class="work-tag">Featured</div>
-      <div class="work-ascii-wrap">
-        <pre id="canvas-oculus" class="ascii-render"></pre>
-      </div>
+      <div class="work-ascii-wrap"><canvas id="wk0"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 01</span>
         <span class="work-title">Oculus</span>
         <span class="work-year">2024</span>
-        <span class="work-medium">Proportional · Georgia · Variable weight · Eye iris study</span>
+        <span class="work-medium">Proportional · Eye iris study · Ellipse SDF + angular fBm</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 01</span>
+        <span class="work-title">Oculus</span>
+        <span class="work-year">2024</span>
+        <span class="work-medium">IBM Plex Mono 300 · Ellipse SDF + angular fBm · 4-octave Perlin</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Organic</span>
+          <span class="tech-pill">SDF</span>
+          <span class="tech-pill">fBm</span>
+        </div>
+        <p class="work-desc">The iris as architecture — characters chosen for brightness and measured pixel width to sculpt tonal depth impossible in monospace.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 2: Cascade — flowing waterfall -->
-    <div class="work-card">
-      <div class="work-ascii-wrap">
-        <pre id="canvas-cascade" class="ascii-render"></pre>
-      </div>
+    <!-- 02 — Cascade -->
+    <div class="work-card" data-category="organic" data-index="1">
+      <div class="work-ascii-wrap"><canvas id="wk1"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 02</span>
         <span class="work-title">Cascade</span>
         <span class="work-year">2023</span>
-        <span class="work-medium">IBM Plex Mono · 8pt · Vertical flow study</span>
+        <span class="work-medium">IBM Plex Mono · Vertical waterfall flow</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 02</span>
+        <span class="work-title">Cascade</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">IBM Plex Mono Light · 5-octave vertical fBm with time offset</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Organic</span>
+          <span class="tech-pill">Flow</span>
+          <span class="tech-pill">Cool Palette</span>
+        </div>
+        <p class="work-desc">Water rendered in text — vertical noise displacement creates the illusion of downward flow with turbulent edge-fade.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 3: Meridian — diagonal light beam -->
-    <div class="work-card">
-      <div class="work-ascii-wrap">
-        <pre id="canvas-meridian" class="ascii-render"></pre>
-      </div>
+    <!-- 03 — Meridian -->
+    <div class="work-card" data-category="geometric" data-index="2">
+      <div class="work-ascii-wrap"><canvas id="wk2"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 03</span>
         <span class="work-title">Meridian</span>
         <span class="work-year">2023</span>
         <span class="work-medium">Garamond Italic · Diagonal chiaroscuro</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 03</span>
+        <span class="work-title">Meridian</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">Garamond Italic · Diagonal SDF beam + scattered Perlin noise</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Geometric</span>
+          <span class="tech-pill">Light Beam</span>
+          <span class="tech-pill">Warm Palette</span>
+        </div>
+        <p class="work-desc">A single shaft of light crosses the grid diagonally — noise scatter simulates atmospheric diffusion through the character field.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 4: Penumbra — sphere eclipse -->
-    <div class="work-card">
-      <div class="work-ascii-wrap">
-        <pre id="canvas-penumbra" class="ascii-render"></pre>
-      </div>
+    <!-- 04 — Penumbra -->
+    <div class="work-card" data-category="geometric" data-index="3">
+      <div class="work-ascii-wrap"><canvas id="wk3"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 04</span>
         <span class="work-title">Penumbra</span>
         <span class="work-year">2022</span>
-        <span class="work-medium">Futura Bold · Planetary eclipse rendering</span>
+        <span class="work-medium">Futura Bold · Sphere SDF with Lambertian shading</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 04</span>
+        <span class="work-title">Penumbra</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">IBM Plex Mono · Sphere SDF · Lambertian diffuse + rim glow</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Geometric</span>
+          <span class="tech-pill">SDF</span>
+          <span class="tech-pill">Shading</span>
+        </div>
+        <p class="work-desc">A sphere illuminated from above-left — the Lambertian reflectance model applied through glyph density, creating photorealistic shadow.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 5: Liminal — foggy horizon -->
-    <div class="work-card">
-      <div class="work-ascii-wrap">
-        <pre id="canvas-liminal" class="ascii-render"></pre>
-      </div>
+    <!-- 05 — Liminal -->
+    <div class="work-card" data-category="abstract" data-index="4">
+      <div class="work-ascii-wrap"><canvas id="wk4"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 05</span>
         <span class="work-title">Liminal</span>
         <span class="work-year">2021</span>
-        <span class="work-medium">Variable weight Inter 100–900 · Atmospheric horizon</span>
+        <span class="work-medium">Variable weight · Atmospheric foggy horizon</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 05</span>
+        <span class="work-title">Liminal</span>
+        <span class="work-year">2021</span>
+        <span class="work-medium">IBM Plex Mono · Layered atmospheric fBm · Warm amber horizon</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Abstract</span>
+          <span class="tech-pill">Atmosphere</span>
+          <span class="tech-pill">Horizon</span>
+        </div>
+        <p class="work-desc">The moment before and after — a horizon line that breathes with the noise, lit by an amber glow that bleeds into ground fog.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 6: Threshold — vortex spiral -->
-    <div class="work-card">
-      <div class="work-ascii-wrap">
-        <pre id="canvas-threshold" class="ascii-render"></pre>
-      </div>
+    <!-- 06 — Threshold -->
+    <div class="work-card" data-category="abstract" data-index="5">
+      <div class="work-ascii-wrap"><canvas id="wk5"></canvas></div>
       <div class="work-info">
         <span class="work-num">No. 06</span>
         <span class="work-title">Threshold</span>
         <span class="work-year">2019</span>
         <span class="work-medium">Didot Hairline · Logarithmic spiral vortex</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 06</span>
+        <span class="work-title">Threshold</span>
+        <span class="work-year">2019</span>
+        <span class="work-medium">IBM Plex Mono · Logarithmic spiral SDF · Radial fBm overlay</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Abstract</span>
+          <span class="tech-pill">Spiral</span>
+          <span class="tech-pill">Cool Palette</span>
+        </div>
+        <p class="work-desc">A vortex defined by polar mathematics — the spiral arms emerge from the intersection of angle, radius, and noise time.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- ═══ NEW TYPOGRAPHIC WORKS ═══ -->
+
+    <!-- 07 — Logotype: wave of text built from repeating letterforms -->
+    <div class="work-card featured" data-category="typographic" data-index="6">
+      <div class="work-ascii-wrap"><canvas id="wk6"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 07</span>
+        <span class="work-title">Logotype Wave</span>
+        <span class="work-year">2024</span>
+        <span class="work-medium">Proportional glyphs · Sinusoidal text displacement · Waveform sculpting</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 07</span>
+        <span class="work-title">Logotype Wave</span>
+        <span class="work-year">2024</span>
+        <span class="work-medium">IBM Plex Mono Light · Sinusoidal column offset · Phase-shifted fBm layers</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Typographic</span>
+          <span class="tech-pill">Wave</span>
+          <span class="tech-pill">Displacement</span>
+        </div>
+        <p class="work-desc">Typographic columns displaced by a compound sine wave — the letterforms themselves become the medium of the waveform rather than the message.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 08 — Baseline Drift -->
+    <div class="work-card" data-category="typographic" data-index="7">
+      <div class="work-ascii-wrap"><canvas id="wk7"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 08</span>
+        <span class="work-title">Baseline Drift</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">Proportional · Vertical drift · Typographic rhythm study</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 08</span>
+        <span class="work-title">Baseline Drift</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">IBM Plex Mono · Per-column vertical offset · Noise-driven baseline shift</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Typographic</span>
+          <span class="tech-pill">Rhythm</span>
+          <span class="tech-pill">Baseline</span>
+        </div>
+        <p class="work-desc">Typographic baselines as subject — each column drifts independently on a noise-time path, making the invisible grid visible and unstable.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 09 — Glyph Rain -->
+    <div class="work-card" data-category="typographic" data-index="8">
+      <div class="work-ascii-wrap"><canvas id="wk8"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 09</span>
+        <span class="work-title">Glyph Rain</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">Cascade density · Per-column phase · Luminance waterfall</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 09</span>
+        <span class="work-title">Glyph Rain</span>
+        <span class="work-year">2023</span>
+        <span class="work-medium">IBM Plex Mono · Per-column sinusoidal phase · Exponential decay trail</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Typographic</span>
+          <span class="tech-pill">Rain</span>
+          <span class="tech-pill">Cascade</span>
+        </div>
+        <p class="work-desc">Characters fall with independent phase offsets per column — density trails simulate a luminous precipitation of pure letterform.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 10 — Kern Study -->
+    <div class="work-card" data-category="typographic" data-index="9">
+      <div class="work-ascii-wrap"><canvas id="wk9"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 10</span>
+        <span class="work-title">Kern Study</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">Inter-glyph spacing · Density bands · Kerning as form</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 10</span>
+        <span class="work-title">Kern Study</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">IBM Plex Mono · Horizontal density gradient · Noise-perturbed kerning bands</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Typographic</span>
+          <span class="tech-pill">Spacing</span>
+          <span class="tech-pill">Gradient</span>
+        </div>
+        <p class="work-desc">Kerning — the negative space between letters — made tangible as a field. Horizontal density bands shift with noise, making space itself the subject.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 11 — Ascender / Descender study -->
+    <div class="work-card" data-category="typographic" data-index="10">
+      <div class="work-ascii-wrap"><canvas id="wk10"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 11</span>
+        <span class="work-title">Ascender</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">Vertical zones · Uppercase gravity · Height-field typography</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 11</span>
+        <span class="work-title">Ascender</span>
+        <span class="work-year">2022</span>
+        <span class="work-medium">IBM Plex Mono · Vertical zone gradient · Cap-height mapped glyph ramps</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Typographic</span>
+          <span class="tech-pill">Zones</span>
+          <span class="tech-pill">Cap Height</span>
+        </div>
+        <p class="work-desc">The typographic vertical axis — cap height, x-height, baseline, descender — made spatial through brightness and glyph selection that maps density to height.</p>
+      </div>
+      <span class="work-arrow">↗</span>
+    </div>
+
+    <!-- 12 — Moiré -->
+    <div class="work-card" data-category="geometric" data-index="11">
+      <div class="work-ascii-wrap"><canvas id="wk11"></canvas></div>
+      <div class="work-info">
+        <span class="work-num">No. 12</span>
+        <span class="work-title">Moiré</span>
+        <span class="work-year">2016</span>
+        <span class="work-medium">Interference pattern · Two-frequency grid · Phase modulation</span>
+        <span class="work-detail-hint">View detail</span>
+      </div>
+      <div class="work-info-static">
+        <span class="work-num">No. 12</span>
+        <span class="work-title">Moiré</span>
+        <span class="work-year">2016</span>
+        <span class="work-medium">IBM Plex Mono · Dual sinusoidal interference · Phase-animated beating</span>
+        <div class="work-tech-pills">
+          <span class="tech-pill">Geometric</span>
+          <span class="tech-pill">Interference</span>
+          <span class="tech-pill">Moiré</span>
+        </div>
+        <p class="work-desc">Two sine grids at slightly different frequencies produce an interference moiré — the beating pattern animated in real time through phase drift.</p>
       </div>
       <span class="work-arrow">↗</span>
     </div>
 
   </div><!-- /works-grid -->
 
+  <!-- TYPOGRAPHIC STATS SECTION -->
+  <section class="typo-detail-section fade-up">
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">74</span>
+      <span class="typo-stat-label">Characters in Standard Ramp</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">4</span>
+      <span class="typo-stat-label">Glyph Ramp Palettes</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">∞</span>
+      <span class="typo-stat-label">Unique Renders Possible</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">0</span>
+      <span class="typo-stat-label">Pixel Images Used</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">2px</span>
+      <span class="typo-stat-label">Thinnest Glyph: · (period)</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">12px</span>
+      <span class="typo-stat-label">Widest Glyph: M (uppercase)</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">60fps</span>
+      <span class="typo-stat-label">All works rendered live</span>
+    </div>
+    <div class="typo-stat-cell">
+      <span class="typo-stat-big">4oct</span>
+      <span class="typo-stat-label">fBm octaves, standard scene</span>
+    </div>
+  </section>
+
+  <!-- TYPE SCALE / RAMP SECTION -->
+  <section class="type-ramp-section fade-up">
+    <div class="type-ramp-label">
+      <span class="label">— Typographic Scale</span>
+      <h2>The Glyph<br>Hierarchy</h2>
+      <p>Each ramp maps brightness values to characters ordered by visual density. The proportion of ink-to-white space determines luminance within the final composition.</p>
+    </div>
+    <div class="type-ramp-rows">
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">VOID</span>
+        <span class="type-ramp-sample" style="font-size:42px; color: rgba(240,236,228,0.06)">· · · · · ·</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">100</span>
+        <span class="type-ramp-sample" style="font-size:36px; color: rgba(240,236,228,0.15)">. , ' ` - _</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">200</span>
+        <span class="type-ramp-sample" style="font-size:30px; color: rgba(240,236,228,0.3)">: ; ~ ! | l I</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">300</span>
+        <span class="type-ramp-sample" style="font-size:26px; color: rgba(240,236,228,0.45)">r f t j c v x z</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">400</span>
+        <span class="type-ramp-sample" style="font-size:22px; color: rgba(240,236,228,0.6)">n s a o e y k h</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">600</span>
+        <span class="type-ramp-sample" style="font-size:20px; color: rgba(240,236,228,0.75)">T C S F U P V X</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">700</span>
+        <span class="type-ramp-sample" style="font-size:18px; color: rgba(240,236,228,0.88)">B K G D N Q A O H W M</span>
+      </div>
+      <div class="type-ramp-row">
+        <span class="type-ramp-size">SOLID</span>
+        <span class="type-ramp-sample" style="font-size:16px; color: rgba(240,236,228,1.0)"># &amp; % $ @</span>
+      </div>
+    </div>
+  </section>
+
   <footer id="footer">
     <span>© 2026 VOID∙GLYPH Studio</span>
-    <span>All works original · Typographic ASCII</span>
+    <span>All works original · Typographic ASCII · 12 works</span>
   </footer>
 
-</div>
+</div><!-- /page-wrap -->
 
-<script src="js/ascii-engine.js"></script>
-<script src="js/shared.js"></script>
 <script>
-// Each work gets its unique scene + appropriate cols/rows
+'use strict';
 
-const scenes = [
-  { id: 'canvas-oculus',    fn: ASCII.sceneEye,       cols: 64, rows: 32, speed: 0.85 },
-  { id: 'canvas-cascade',   fn: ASCII.sceneCascade,   cols: 38, rows: 46, speed: 1.1  },
-  { id: 'canvas-meridian',  fn: ASCII.sceneMeridian,  cols: 38, rows: 46, speed: 0.7  },
-  { id: 'canvas-penumbra',  fn: ASCII.scenePenumbra,  cols: 38, rows: 46, speed: 0.6  },
-  { id: 'canvas-liminal',   fn: ASCII.sceneLiminal,   cols: 38, rows: 46, speed: 0.9  },
-  { id: 'canvas-threshold', fn: ASCII.sceneThreshold, cols: 38, rows: 46, speed: 1.0  },
+/* ─────────────────────────────────────────────
+   PERLIN NOISE
+───────────────────────────────────────────── */
+const Noise = (() => {
+  const perm = new Uint8Array(512);
+  const src = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
+  for (let i=0;i<256;i++) perm[i]=perm[i+256]=src[i];
+  const fade=t=>t*t*t*(t*(t*6-15)+10);
+  const lerp=(a,b,t)=>a+t*(b-a);
+  const grad=(h,x,y)=>{const v=h&3,u=v<2?x:y,w=v<2?y:x;return((h&1)?-u:u)+((h&2)?-w:w);};
+  function n2(x,y){
+    const X=Math.floor(x)&255,Y=Math.floor(y)&255;
+    x-=Math.floor(x);y-=Math.floor(y);
+    const u=fade(x),v=fade(y),a=perm[X]+Y,b=perm[X+1]+Y;
+    return lerp(lerp(grad(perm[a],x,y),grad(perm[b],x-1,y),u),lerp(grad(perm[a+1],x,y-1),grad(perm[b+1],x-1,y-1),u),v);
+  }
+  function fbm(x,y,oct=4,lac=2.1,gain=0.5){
+    let v=0,a=0.5,f=1,mx=0;
+    for(let i=0;i<oct;i++){v+=n2(x*f,y*f)*a;mx+=a;a*=gain;f*=lac;}
+    return v/mx;
+  }
+  return {n2,fbm};
+})();
+
+/* ─────────────────────────────────────────────
+   ASCII CANVAS RENDERER
+───────────────────────────────────────────── */
+const RAMPS = {
+  std:  " .'`,-_:;~!|lIi1/\\(){}[]rftjcvxznsaoeykhdpqgwmTCSFUPVXBKGDNQAOHWM#&%$@",
+  org:  " .,':-~!|lrftjcvxznsaoydpgwmTCSFUPBKNOHWM#&@",
+  shp:  " .:;!|1/\\<>+=rftTYFZUPVXBKGDHWM#%@",
+  port: " .',-:;~!|lirftcvxznsaoeykhdpqgwTCSFUPBKNOHWM#&@",
+  typo: " .,:-~|lirftvxznsoeykdpgwTCSFUPBKNOHWM#&@",
+};
+
+function charAt(b, ramp='std') {
+  const r = RAMPS[ramp];
+  return r[Math.floor(Math.pow(1-Math.max(0,Math.min(1,b)),1)*(r.length-1))];
+}
+
+function renderToCanvas(canvas, cols, rows, sceneFn, t, fontSize=11) {
+  const cw = Math.ceil(fontSize*0.605);
+  const ch = Math.ceil(fontSize*1.2);
+  const W=cols*cw, H=rows*ch;
+  if(canvas.width!==W) canvas.width=W;
+  if(canvas.height!==H) canvas.height=H;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#050505';
+  ctx.fillRect(0,0,W,H);
+  ctx.font=`300 ${fontSize}px 'IBM Plex Mono',monospace`;
+  ctx.textBaseline='top';
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const {ch:char,color}=sceneFn(c,r,cols,rows,t);
+      ctx.fillStyle=color;
+      ctx.fillText(char,c*cw,r*ch);
+    }
+  }
+}
+
+/* ─────────────────────────────────────────────
+   COLOR HELPERS
+───────────────────────────────────────────── */
+const cWarm = b => { const v=Math.round(b*210+28); return `rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`; };
+const cCool = b => { const v=Math.round(b*200+20); return `rgb(${Math.round(v*.88)},${Math.round(v*.92)},${v})`; };
+const cAmber = b => { const v=Math.round(b*190+22); return `rgb(${v},${Math.round(v*.78)},${Math.round(v*.28)})`; };
+const cGreen = b => { const v=Math.round(b*200+18); return `rgb(${Math.round(v*.38)},${v},${Math.round(v*.42)})`; };
+const cBlue  = b => { const v=Math.round(b*200+15); return `rgb(${Math.round(v*.4)},${Math.round(v*.7)},${v})`; };
+
+/* ─────────────────────────────────────────────
+   ORIGINAL 6 SCENES
+───────────────────────────────────────────── */
+function sceneEye(c,r,cols,rows,t){
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
+  const ex=nx,ey=ny*2.5;
+  const eyeD=Math.sqrt(ex*ex+ey*ey)-1.0;
+  if(eyeD>0.04){
+    const bg=Noise.fbm(c*0.055+t*0.08,r*0.07+t*0.06,2)*.5+.5;
+    const b=bg*0.08;
+    return{ch:charAt(b,'std'),color:cWarm(b)};
+  }
+  if(eyeD>-0.08){
+    const whiteB=(0.08-eyeD)/0.12*0.55;
+    const vein=Noise.fbm(c*0.3+t*.02,r*0.3,3)*.5+.5;
+    const b=whiteB*(0.4+vein*.1);
+    return{ch:charAt(b,'std'),color:`rgb(${Math.round(b*180+18)},${Math.round(b*160+15)},${Math.round(b*140+12)})`};
+  }
+  const px=Math.sin(t*.38)*.04,py=Math.cos(t*.28)*.025;
+  const pd=Math.sqrt((nx-px)**2+(ny-py)**2);
+  if(pd<0.19){
+    const deep=Noise.fbm(c*.3+t,r*.3+t*.7,2)*.5+.5;
+    const b=deep*.05;
+    return{ch:charAt(b,'shp'),color:cWarm(b)};
+  }
+  const angle=Math.atan2(ny-py,nx-px);
+  const ir1=Noise.fbm(Math.cos(angle)*4+t*.22,Math.sin(angle)*4+pd*7,4)*.5+.5;
+  const ir2=Noise.fbm(pd*6+t*.1,angle*1.6,3)*.5+.5;
+  const ir3=Noise.fbm(c*.18+t*.15,r*.18,2)*.5+.5;
+  const edgeFade=Math.max(0,1-Math.pow(Math.abs(eyeD)*18,0.4));
+  const b=(ir1*.45+ir2*.35+ir3*.15+edgeFade*.05)*.88+.06;
+  const clamp=Math.max(0.08,Math.min(0.94,b));
+  return{ch:charAt(clamp,'org'),color:`rgb(${Math.round(clamp*195+18)},${Math.round(clamp*160+14)},${Math.round(clamp*90+8)})`};
+}
+
+function sceneCascade(c,r,cols,rows,t){
+  const nx=c/cols,ny=r/rows;
+  const flow=Noise.fbm(nx*2.8,ny*5.5-t*.38,5);
+  const turb=Noise.fbm(nx*7+flow,ny*7,3)*.5+.5;
+  const edge=Math.min(nx,1-nx)*3.8;
+  const b=Math.pow(Math.max(0,Math.min(1,(flow*.42+.5)*Math.min(1,edge*.7)+turb*.38)),1.12);
+  return{ch:charAt(b,'org'),color:cCool(b)};
+}
+
+function sceneMeridian(c,r,cols,rows,t){
+  const nx=c/cols,ny=r/rows;
+  const beam=Math.abs((nx-ny+Math.sin(t*.13)*.04)*2.2);
+  const bLight=Math.max(0,1-beam*2.3);
+  const noise=Noise.fbm(nx*4.5+t*.07,ny*4.5,4)*.5+.5;
+  const v=Math.min(nx,1-nx,ny,1-ny)*4.5;
+  const b=Math.pow(Math.max(0,Math.min(1,bLight*.82+noise*.26)*Math.min(1,v)),.78);
+  return{ch:charAt(b,'shp'),color:cWarm(b)};
+}
+
+function scenePenumbra(c,r,cols,rows,t){
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
+  const sd=Math.sqrt(nx*nx+ny*ny)-0.68;
+  const lx=-0.58,ly=-0.48;
+  const ldist=Math.sqrt((nx-lx)**2+(ny-ly)**2);
+  if(sd<0){
+    const nX=nx/.68,nY=ny/.68;
+    const diff=Math.max(0,(nX*(-lx)+nY*(-ly))*.95);
+    const sub=Noise.fbm(nx*3.8+t*.04,ny*3.8,4)*.5+.5;
+    const b=Math.max(.02,Math.min(.95,diff*.72+sub*.22));
+    const v=Math.round(b*210+18);
+    return{ch:charAt(b,'port'),color:`rgb(${v},${Math.round(v*.96)},${Math.round(v*.88)})`};
+  }
+  const glow=Math.max(0,1-Math.abs(sd)*5.5)*.28;
+  const bg=Noise.fbm(nx*2.8+t*.05,ny*2.8,3)*.5+.5;
+  const amb=Math.max(0,1-ldist*.88)*.18;
+  const b=Math.max(0,bg*.13+glow+amb);
+  return{ch:charAt(b,'std'),color:cWarm(b)};
+}
+
+function sceneLiminal(c,r,cols,rows,t){
+  const nx=c/cols,ny=r/rows;
+  const horizon=.44+Noise.fbm(nx*1.8+t*.05,0,2)*.07;
+  const distH=Math.abs(ny-horizon);
+  const fog=Noise.fbm(nx*3.8-t*.09,ny*2.8,5)*.5+.5;
+  const sky=ny<horizon?(1-ny)*.13+fog*.11:0;
+  const gnd=ny>horizon?(ny-horizon)*.62+fog*.32:0;
+  const glow=Math.max(0,1-distH*11)*.5;
+  const b=Math.pow(Math.max(0,Math.min(1,sky+gnd+glow)),.88);
+  const warm=Math.max(0,1-distH*8);
+  const rv=Math.round(b*200+15+warm*30),gv=Math.round(b*175+12+warm*15),bv=Math.round(b*130+10);
+  return{ch:charAt(b,'org'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})`};
+}
+
+function sceneThreshold(c,r,cols,rows,t){
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
+  const dist=Math.sqrt(nx*nx+ny*ny);
+  const angle=Math.atan2(ny,nx);
+  const spiral=Math.abs(Math.sin(angle*4-dist*7.5+t*.28))*.52;
+  const radial=Math.max(0,1-dist*.88);
+  const center=Math.max(0,1-dist*3.8);
+  const noise=Noise.fbm(nx*2.8+t*.08,ny*2.8,4)*.5+.5;
+  const b=Math.min(.95,Math.max(0,spiral*radial*.62+center*.38+noise*.14));
+  return{ch:charAt(b,'shp'),color:cCool(b)};
+}
+
+/* ─────────────────────────────────────────────
+   NEW TYPOGRAPHIC SCENES (07–12)
+───────────────────────────────────────────── */
+
+// 07 — Logotype Wave: sinusoidal column displacement with compound phase
+function sceneLogotypeWave(c,r,cols,rows,t){
+  const nx=c/cols, ny=r/rows;
+  // compound wave: two frequencies beating together
+  const wave1 = Math.sin(nx*Math.PI*3.2 - t*0.55) * 0.28;
+  const wave2 = Math.sin(nx*Math.PI*1.1 - t*0.28 + 1.1) * 0.14;
+  const wave  = wave1 + wave2;
+  // effective y after displacement
+  const ey = ny - wave;
+  const distToWave = Math.abs(ey - 0.5);
+  // core band
+  const band = Math.max(0, 1 - distToWave * 14) * 0.9;
+  // shoulder glow
+  const shoulder = Math.max(0, 1 - distToWave * 5) * 0.28;
+  // noise texture within
+  const noise = Noise.fbm(nx*5 + t*0.07, ny*5, 3) * 0.5 + 0.5;
+  const b = Math.min(0.95, band * (0.6 + noise*0.4) + shoulder * 0.3);
+  // warm amber glow on the wave crest
+  const warmness = band;
+  const rv = Math.round(b*200+20 + warmness*40);
+  const gv = Math.round(b*170+14 + warmness*18);
+  const bv = Math.round(b*110+10);
+  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+}
+
+// 08 — Baseline Drift: per-column independent baseline shift
+function sceneBaselineDrift(c,r,cols,rows,t){
+  const nx=c/cols, ny=r/rows;
+  // each column has its own noise-driven vertical offset
+  const colPhase = Noise.n2(nx*3.5, t*0.18) * 0.5 + 0.5;
+  const drift = (colPhase - 0.5) * 0.35;
+  const ey = ny - drift;
+  // three horizontal text bands (cap, x, descender zones)
+  const zones = [0.28, 0.52, 0.76];
+  let maxB = 0;
+  zones.forEach((z, i) => {
+    const d = Math.abs(ey - z);
+    const w = i === 0 ? 0.04 : 0.032; // cap line slightly heavier
+    const intensity = Math.max(0, 1 - d / w);
+    maxB = Math.max(maxB, intensity);
+  });
+  // background field
+  const bg = Noise.fbm(nx*6+t*0.05, ny*4, 3) * 0.5 + 0.5;
+  const b = Math.min(0.95, maxB * 0.85 + bg * 0.08);
+  // color: brighter zones warmer, background cool
+  const warmR = maxB;
+  const rv = Math.round(b*(180+warmR*30)+15);
+  const gv = Math.round(b*(150+warmR*15)+12);
+  const bv = Math.round(b*120+10);
+  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+}
+
+// 09 — Glyph Rain: per-column phase sinusoidal drop with trailing decay
+function sceneGlyphRain(c,r,cols,rows,t){
+  const nx=c/cols, ny=r/rows;
+  // unique phase and speed per column, seeded by column index
+  const colSeed = Noise.n2(nx*8.3, 0) * 0.5 + 0.5;
+  const speed = 0.4 + colSeed * 0.8;
+  const phase = colSeed * Math.PI * 2;
+  // head position: travels down over time
+  const head = ((t * speed + phase) % (Math.PI * 2)) / (Math.PI * 2);
+  const dist = ny - head;
+  // leading head: bright
+  const lead = Math.max(0, 1 - Math.abs(dist) * 26) * 0.9;
+  // trailing tail: exponential decay above head
+  const tail = dist < 0 ? Math.exp(dist * 14) * 0.55 : 0;
+  // noise overlay
+  const noise = Noise.fbm(nx*4+t*.06, ny*5+t*.04, 2) * 0.5 + 0.5;
+  const b = Math.min(0.95, lead + tail * 0.7 + noise * 0.06);
+  // green-tinted for terminal/rain aesthetic — subtle
+  const rv = Math.round(b*160+10 + lead*20);
+  const gv = Math.round(b*210+20 + lead*15);
+  const bv = Math.round(b*140+14 + lead*10);
+  return { ch: charAt(b,'std'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.min(255,bv)})` };
+}
+
+// 10 — Kern Study: horizontal density bands with noise-perturbed edges
+function sceneKernStudy(c,r,cols,rows,t){
+  const nx=c/cols, ny=r/rows;
+  // horizontal density gradient: light→dark→light rhythm
+  const band_freq = 3.8;
+  const base = Math.sin(nx * Math.PI * band_freq + t * 0.12) * 0.5 + 0.5;
+  // perturb horizontally with noise
+  const perturb = Noise.fbm(nx*5+t*0.06, ny*3, 4) * 0.5 + 0.5;
+  const edge_noise = Noise.fbm(nx*12+t*0.04, ny*8, 2) * 0.5 + 0.5;
+  // vertical gradient: slightly heavier at center
+  const vy = 1 - Math.abs(ny - 0.5) * 0.6;
+  const b = Math.min(0.94, (base*0.55 + perturb*0.3 + edge_noise*0.12) * vy);
+  // warm tint with the amber signature
+  const warmth = base;
+  const rv = Math.round(b*195+18 + warmth*20);
+  const gv = Math.round(b*165+14 + warmth*10);
+  const bv = Math.round(b*110+8);
+  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+}
+
+// 11 — Ascender: vertical zones mapping cap/x/base/descender to brightness
+function sceneAscender(c,r,cols,rows,t){
+  const nx=c/cols, ny=r/rows;
+  // typographic zones (top to bottom: ascender, cap, x-height, baseline, descender)
+  // these slowly breathe via time
+  const breath = Math.sin(t*0.2)*0.015;
+  const zones = [
+    { y: 0.12 + breath, w: 0.06, b: 0.25, label:'ascender' },
+    { y: 0.28 + breath, w: 0.09, b: 0.82, label:'cap' },
+    { y: 0.50,          w: 0.08, b: 0.65, label:'x-height' },
+    { y: 0.67 - breath, w: 0.05, b: 0.92, label:'baseline' },
+    { y: 0.82 - breath, w: 0.05, b: 0.35, label:'descender'},
+  ];
+  // accumulate brightness from all zones
+  let totalB = 0;
+  zones.forEach(z => {
+    const d = Math.abs(ny - z.y);
+    const contrib = Math.max(0, 1 - d / z.w) * z.b;
+    totalB = Math.max(totalB, contrib);
+  });
+  // horizontal noise texture
+  const texture = Noise.fbm(nx*8+t*0.04, ny*5, 3)*0.5+0.5;
+  // vignette
+  const vig = Math.min(nx, 1-nx)*4;
+  const b = Math.min(0.92, (totalB*0.8 + texture*0.14) * Math.min(1, vig));
+  // warm tones for the heavier zones, cool for hairlines
+  const warm = totalB;
+  const rv = Math.round(b*200+15 + warm*22);
+  const gv = Math.round(b*168+12 + warm*12);
+  const bv = Math.round(b*120+10 - warm*8);
+  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.max(0,bv)})` };
+}
+
+// 12 — Moiré: two sinusoidal interference grids with phase animation
+function sceneMoire(c,r,cols,rows,t){
+  const nx=(c/cols)*2-1, ny=(r/rows)*2-1;
+  // two grids at slightly different spatial frequencies
+  const freq1 = 5.8, freq2 = 6.3;
+  const angle1 = 0.0,     angle2 = 0.22; // slight rotation between grids
+  // grid 1
+  const g1x = Math.cos(angle1), g1y = Math.sin(angle1);
+  const v1 = Math.sin((nx*g1x + ny*g1y)*Math.PI*freq1 + t*0.08)*0.5+0.5;
+  // grid 2
+  const g2x = Math.cos(angle2), g2y = Math.sin(angle2);
+  const v2 = Math.sin((nx*g2x + ny*g2y)*Math.PI*freq2 - t*0.06)*0.5+0.5;
+  // interference (multiply = moiré beating pattern)
+  const moire = v1 * v2;
+  // radial vignette
+  const vign = Math.max(0, 1 - (nx*nx+ny*ny)*0.45);
+  const b = Math.min(0.93, Math.pow(moire * vign, 0.72));
+  // cool blue-white palette for optical/geometric feel
+  const rv = Math.round(b*170+14);
+  const gv = Math.round(b*185+16);
+  const bv = Math.round(b*210+20);
+  return { ch: charAt(b,'shp'), color:`rgb(${rv},${gv},${bv})` };
+}
+
+/* ─────────────────────────────────────────────
+   ALL WORKS DATA
+───────────────────────────────────────────── */
+const WORKS = [
+  {
+    num:'01', title:'Oculus', year:'2024',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Ellipse SDF + angular fBm',
+    dimensions:'64 × 40 cols/rows',
+    technique:'Proportional canvas',
+    tags:['Organic','SDF','fBm'],
+    desc:'The iris as architecture. Dense glyphs anchor shadow; hairline glyphs breathe in light. The pupil slowly drifts on a Lissajous path — a living, proportional eye.',
+    note:'The iris ramp uses three overlapping fBm octaves sampled in polar coordinates around the pupil centre. Angular coordinates produce the characteristic radial fibre texture of iris stroma.',
+    fn: sceneEye, cols:52, rows:36, sz:9, sp:.85
+  },
+  {
+    num:'02', title:'Cascade', year:'2023',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Vertical fBm with time offset',
+    dimensions:'36 × 44 cols/rows',
+    technique:'5-octave flow field',
+    tags:['Organic','Flow','Cool Palette'],
+    desc:'Water rendered in text — vertical noise displacement creates the illusion of downward flow, with turbulent edge-fade at the left and right margins.',
+    note:'The flow field is a 5-octave fBm with the y-axis offset by time. Edge falloff uses a smooth minimum of the column's normalised x-position, preventing hard vertical margins.',
+    fn: sceneCascade, cols:36, rows:44, sz:8.5, sp:1.1
+  },
+  {
+    num:'03', title:'Meridian', year:'2023',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Diagonal SDF beam + Perlin scatter',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Chiaroscuro beam',
+    tags:['Geometric','Light Beam','Warm Palette'],
+    desc:'A single shaft of light crosses the grid diagonally — noise scatter simulates atmospheric diffusion of light through the character field.',
+    note:'The beam is computed as a signed distance to a diagonal line y=x, modulated by sin(t). The scatter field adds volumetric noise to prevent the beam from reading as a sharp edge.',
+    fn: sceneMeridian, cols:36, rows:44, sz:8.5, sp:.7
+  },
+  {
+    num:'04', title:'Penumbra', year:'2022',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Sphere SDF · Lambertian diffuse',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Photorealistic shading',
+    tags:['Geometric','SDF','Shading'],
+    desc:'A sphere illuminated from above-left — the Lambertian reflectance model applied through glyph density, creating photorealistic shadow on a typographic surface.',
+    note:'The surface normal at each point is computed from the sphere SDF gradient. Diffuse term: max(0, N·L). Sub-surface scatter is approximated by a low-frequency noise overlay on the lit face.',
+    fn: scenePenumbra, cols:36, rows:44, sz:8.5, sp:.6
+  },
+  {
+    num:'05', title:'Liminal', year:'2021',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Layered atmospheric fBm',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Atmospheric horizon',
+    tags:['Abstract','Atmosphere','Horizon'],
+    desc:'The moment before and after — a horizon line that breathes with the noise, lit by an amber glow that bleeds into ground fog.',
+    note:'The horizon is a noise-perturbed horizontal line at y≈0.44. Sky brightness uses an inverse linear gradient; ground uses a steeper power curve. The amber glow is a gaussian falloff around the horizon.',
+    fn: sceneLiminal, cols:36, rows:44, sz:8.5, sp:.9
+  },
+  {
+    num:'06', title:'Threshold', year:'2019',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Logarithmic spiral SDF',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Polar mathematics',
+    tags:['Abstract','Spiral','Cool Palette'],
+    desc:'A vortex defined by polar mathematics — the spiral arms emerge from the intersection of angle, radius, and noise time.',
+    note:'The spiral function is |sin(θ·4 − r·7.5 + t·0.28)| in polar coordinates. The radial falloff prevents edge saturation. Noise overlay adds micro-texture to prevent the arms from reading as pure geometry.',
+    fn: sceneThreshold, cols:36, rows:44, sz:8.5, sp:1.0
+  },
+  {
+    num:'07', title:'Logotype Wave', year:'2024',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Compound sinusoidal wave displacement',
+    dimensions:'62 × 26 cols/rows',
+    technique:'Waveform typographic sculpting',
+    tags:['Typographic','Wave','Displacement'],
+    desc:'Typographic columns displaced by a compound sine wave — two frequencies beating against each other produce the waveform, the letterforms the medium.',
+    note:'Two sine waves (f₁=3.2, f₂=1.1) combine with independent phase velocities. The wave envelope is a gaussian falloff centred at y=0.5. Character density increases at the wave crest.',
+    fn: sceneLogotypeWave, cols:62, rows:26, sz:9, sp:.7
+  },
+  {
+    num:'08', title:'Baseline Drift', year:'2023',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Per-column noise-driven baseline displacement',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Typographic rhythm study',
+    tags:['Typographic','Rhythm','Baseline'],
+    desc:'Typographic baselines as subject — each column drifts independently on a noise-time path, making the invisible grid visible and unstable.',
+    note:'Three horizontal zones (cap, x-height, descender) are rendered as thin density bands. Each column\'s y-offset is driven by a 1D noise slice at that column\'s x position, animating over time.',
+    fn: sceneBaselineDrift, cols:36, rows:44, sz:8.5, sp:.9
+  },
+  {
+    num:'09', title:'Glyph Rain', year:'2023',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Per-column phase sinusoidal drop + exponential trail',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Luminance precipitation',
+    tags:['Typographic','Rain','Cascade'],
+    desc:'Characters fall with independent phase offsets per column — density trails simulate a luminous precipitation of pure letterform.',
+    note:'Each column has a unique speed (0.4–1.2×) and phase seeded by column-index noise. The head is a gaussian peak; the tail uses exponential decay for a falling comet / raindrop appearance.',
+    fn: sceneGlyphRain, cols:36, rows:44, sz:8.5, sp:1.0
+  },
+  {
+    num:'10', title:'Kern Study', year:'2022',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Horizontal density gradient · noise-perturbed kerning bands',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Negative space as form',
+    tags:['Typographic','Spacing','Gradient'],
+    desc:'Kerning — the negative space between letters — made tangible. Horizontal density bands shift with noise, making space itself the subject.',
+    note:'A sine wave across the x-axis creates alternating light/dense vertical bands at frequency 3.8. Two noise layers (coarse + fine) perturb the band edges to prevent the pattern reading as mechanical.',
+    fn: sceneKernStudy, cols:36, rows:44, sz:8.5, sp:.8
+  },
+  {
+    num:'11', title:'Ascender', year:'2022',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Vertical typographic zone mapping',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Cap-height height field',
+    tags:['Typographic','Zones','Cap Height'],
+    desc:'The typographic vertical axis — cap height, x-height, baseline, descender — made spatial through brightness and glyph selection mapping density to height.',
+    note:'Five typographic zones are rendered as gaussian bands at fixed y positions. Band widths correspond to traditional typographic proportions (cap-height widest, hairline descender thinnest). All zones breathe via a low-frequency sine.',
+    fn: sceneAscender, cols:36, rows:44, sz:8.5, sp:.6
+  },
+  {
+    num:'12', title:'Moiré', year:'2016',
+    medium:'IBM Plex Mono Light · 300wt',
+    algorithm:'Dual sinusoidal grid interference',
+    dimensions:'36 × 44 cols/rows',
+    technique:'Phase-animated beating pattern',
+    tags:['Geometric','Interference','Moiré'],
+    desc:'Two sine grids at slightly different spatial frequencies produce an interference moiré — the beating pattern animated in real time through phase drift.',
+    note:'Grid 1 is axis-aligned (θ=0°), grid 2 is rotated by 12.6°. Spatial frequencies differ by 0.5 cycles/unit. The product of both fields produces moiré beating; phase drifts at ±0.07 rad/tick.',
+    fn: sceneMoire, cols:36, rows:44, sz:8.5, sp:.5
+  },
 ];
 
-scenes.forEach(({ id, fn, cols, rows, speed }) => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  let stopFn = null;
-  const obs = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && !stopFn) {
-      stopFn = ASCII.animate(el, fn, cols, rows, speed);
-    } else if (!e.isIntersecting && stopFn) {
-      stopFn(); stopFn = null;
+/* ─────────────────────────────────────────────
+   ANIMATION LOOP MANAGER
+───────────────────────────────────────────── */
+const Loops = (() => {
+  const active = new Map();
+  function start(id, fn) {
+    stop(id);
+    let t=0;
+    function tick(){fn(t);t+=0.016;active.set(id,requestAnimationFrame(tick));}
+    active.set(id,requestAnimationFrame(tick));
+  }
+  function stop(id){if(active.has(id)){cancelAnimationFrame(active.get(id));active.delete(id);}}
+  function stopAll(){for(const[id]of active)stop(id);}
+  return{start,stop,stopAll};
+})();
+
+/* ─────────────────────────────────────────────
+   CARD ANIMATIONS
+───────────────────────────────────────────── */
+document.querySelectorAll('.work-card').forEach(card => {
+  const idx = parseInt(card.dataset.index);
+  const w = WORKS[idx];
+  if (!w) return;
+  const canvas = card.querySelector('canvas');
+  if (!canvas) return;
+
+  const iob = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) {
+      Loops.start('card-'+idx, t => renderToCanvas(canvas, w.cols, w.rows, w.fn, t*w.sp, w.sz));
+      iob.disconnect();
     }
-  }, { threshold: 0.05 });
-  obs.observe(el);
+  }, { threshold: 0.04 });
+  iob.observe(card);
+
+  // Click to open modal
+  card.addEventListener('click', () => openModal(idx));
 });
 
-// Filter buttons (visual only — all cards shown)
+/* ─────────────────────────────────────────────
+   MODAL
+───────────────────────────────────────────── */
+let modalIndex = -1;
+let modalLoopId = 'modal-canvas-loop';
+
+function openModal(idx) {
+  const w = WORKS[idx];
+  if (!w) return;
+  modalIndex = idx;
+
+  // Build info panel
+  const info = document.getElementById('modal-info');
+  info.innerHTML = `
+    <div>
+      <span class="modal-num">No. ${w.num}</span>
+      <h2 class="modal-title">${w.title}</h2>
+      <span class="modal-year">${w.year}</span>
+      <div class="modal-spec-grid">
+        <div class="modal-spec">
+          <span class="modal-spec-label">Medium</span>
+          <span class="modal-spec-val">${w.medium}</span>
+        </div>
+        <div class="modal-spec">
+          <span class="modal-spec-label">Algorithm</span>
+          <span class="modal-spec-val">${w.algorithm}</span>
+        </div>
+        <div class="modal-spec">
+          <span class="modal-spec-label">Grid</span>
+          <span class="modal-spec-val">${w.dimensions}</span>
+        </div>
+        <div class="modal-spec">
+          <span class="modal-spec-label">Technique</span>
+          <span class="modal-spec-val">${w.technique}</span>
+        </div>
+      </div>
+      <div class="modal-divider"></div>
+      <p class="modal-desc">${w.desc}</p>
+      <div class="modal-process-note"><p><strong style="color:var(--accent);font-style:normal">Technical note —</strong> ${w.note}</p></div>
+      <div class="modal-tech-row">${w.tags.map(t=>`<span class="tech-pill">${t}</span>`).join('')}</div>
+      <div class="modal-glyph-excerpt" id="modal-excerpt">Loading…</div>
+    </div>
+    <div class="modal-nav">
+      <button class="modal-nav-btn" id="modal-prev">← Prev</button>
+      <button class="modal-nav-btn" id="modal-next">Next →</button>
+    </div>
+  `;
+
+  // Nav buttons
+  document.getElementById('modal-prev').addEventListener('click', e => { e.stopPropagation(); openModal((idx - 1 + WORKS.length) % WORKS.length); });
+  document.getElementById('modal-next').addEventListener('click', e => { e.stopPropagation(); openModal((idx + 1) % WORKS.length); });
+
+  // Start canvas loop
+  const mc = document.getElementById('modal-canvas');
+  Loops.stop(modalLoopId);
+  Loops.start(modalLoopId, t => {
+    renderToCanvas(mc, w.cols+10, Math.floor(w.rows*1.1), w.fn, t*w.sp, w.sz+1);
+    // generate text excerpt from current frame
+    if (t < 0.1) {
+      setTimeout(() => buildExcerpt(w, mc), 60);
+    }
+  });
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function buildExcerpt(w, canvas) {
+  const ex = document.getElementById('modal-excerpt');
+  if (!ex) return;
+  // Generate a tiny ASCII snapshot using the std ramp as pre-text
+  const cols2 = 58, rows2 = 5;
+  let txt = '';
+  for (let r=0; r<rows2; r++) {
+    for (let c=0; c<cols2; c++) {
+      const { ch } = w.fn(c, r, cols2, rows2, 0.5);
+      txt += ch;
+    }
+    if (r < rows2-1) txt += '\n';
+  }
+  ex.textContent = txt;
+}
+
+function closeModal() {
+  Loops.stop(modalLoopId);
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  modalIndex = -1;
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ─────────────────────────────────────────────
+   FILTER
+───────────────────────────────────────────── */
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.work-card').forEach(card => {
+      const cat = card.dataset.category;
+      if (filter === 'all' || cat === filter) {
+        card.style.display = '';
+        // reset span for featured if in grid mode
+      } else {
+        card.style.display = 'none';
+      }
+    });
   });
 });
+
+/* ─────────────────────────────────────────────
+   VIEW TOGGLE
+───────────────────────────────────────────── */
+document.getElementById('view-grid').addEventListener('click', () => {
+  document.getElementById('works-grid').classList.remove('list-view');
+  document.getElementById('view-grid').classList.add('active');
+  document.getElementById('view-list').classList.remove('active');
+});
+document.getElementById('view-list').addEventListener('click', () => {
+  document.getElementById('works-grid').classList.add('list-view');
+  document.getElementById('view-list').classList.add('active');
+  document.getElementById('view-grid').classList.remove('active');
+});
+
+/* ─────────────────────────────────────────────
+   CURSOR
+───────────────────────────────────────────── */
+(function(){
+  const dot=document.getElementById('cursor');
+  const trail=document.getElementById('cursor-trail');
+  if(!dot||!trail)return;
+  let mx=0,my=0,tx=0,ty=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  document.querySelectorAll('a,button,.work-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>dot.classList.add('hover'));
+    el.addEventListener('mouseleave',()=>dot.classList.remove('hover'));
+  });
+  (function loop(){tx+=(mx-tx)*.15;ty+=(my-ty)*.15;dot.style.left=mx+'px';dot.style.top=my+'px';trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop);})();
+})();
+
+/* ─────────────────────────────────────────────
+   SCROLL FADE-UPS
+───────────────────────────────────────────── */
+(function(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+  },{threshold:.1});
+  document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+})();
+
+/* ─────────────────────────────────────────────
+   NAV ACTIVE STATE
+───────────────────────────────────────────── */
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  if(a.getAttribute('href')==='works.html')a.classList.add('active');
+});
+document.getElementById('nav-indicator').textContent='Works';
+document.querySelector('.page-wrap').classList.add('page-enter');
 </script>
 </body>
 </html>
