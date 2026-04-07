@@ -11,7 +11,6 @@
   document.addEventListener('mouseenter', () => { dot.style.opacity='1'; trail.style.opacity='0.5'; });
   document.addEventListener('mouseleave', () => { dot.style.opacity='0'; trail.style.opacity='0'; });
 
-  // hover state for links/buttons
   document.querySelectorAll('a, button, .work-card').forEach(el => {
     el.addEventListener('mouseenter', () => dot.classList.add('hover'));
     el.addEventListener('mouseleave', () => dot.classList.remove('hover'));
