@@ -6,210 +6,54 @@
 <title>About — VOID∙GLYPH</title>
 <link rel="stylesheet" href="css/design.css">
 <style>
-/* ── About hero ──────────────────────────────────────── */
-.about-hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 64px);
-  border-bottom: var(--border);
+.about-hero { display:grid; grid-template-columns:1fr 1fr; min-height:calc(100vh - 64px); border-bottom:var(--border); }
+.about-portrait { border-right:var(--border); background:var(--bg2); display:flex; align-items:center; justify-content:center; padding:48px; position:relative; overflow:hidden; }
+.about-portrait::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 70% at 50% 50%, transparent 50%, rgba(7,7,7,0.7) 100%); pointer-events:none; z-index:2; }
+#portrait-canvas { font-size:7px; line-height:1.14; letter-spacing:0.7px; color:var(--fg); max-height:80vh; overflow:hidden; }
+.about-text { padding:72px 60px; display:flex; flex-direction:column; justify-content:center; }
+.about-text h1 { font-family:var(--font-display); font-size:clamp(40px,6vw,80px); font-weight:700; font-style:italic; color:var(--bright); line-height:0.92; margin-bottom:28px; }
+.about-text .lead { font-size:13px; line-height:1.9; color:var(--fg-muted); max-width:420px; margin-bottom:20px; }
+.about-text .lead strong { color:var(--accent); font-weight:400; }
+.about-quote { margin:36px 0; padding-left:20px; border-left:2px solid var(--red); }
+.about-quote blockquote { font-family:var(--font-display); font-size:20px; font-style:italic; font-weight:400; color:var(--bright); line-height:1.5; }
+.about-quote cite { font-size:9px; letter-spacing:0.35em; color:var(--fg-dim); text-transform:uppercase; font-style:normal; display:block; margin-top:12px; }
+.cv-section { padding:80px 48px; border-bottom:var(--border); display:grid; grid-template-columns:240px 1fr; gap:60px; }
+.cv-section h2 { font-family:var(--font-display); font-size:40px; font-weight:700; font-style:italic; color:var(--bright); line-height:1; position:sticky; top:80px; align-self:start; }
+.timeline { display:flex; flex-direction:column; }
+.timeline-item { display:grid; grid-template-columns:80px 1fr; gap:28px; padding:28px 0; border-top:var(--border); }
+.timeline-year { font-size:10px; letter-spacing:0.2em; color:var(--red); padding-top:3px; }
+.timeline-content h3 { font-family:var(--font-display); font-size:18px; font-style:italic; color:var(--bright); margin-bottom:6px; }
+.timeline-content p { font-size:11px; line-height:1.7; color:var(--fg-dim); }
+.skills-grid { padding:80px 48px; display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-bottom:var(--border); }
+.skill-cell { padding:40px 32px; border-right:var(--border); }
+.skill-cell:last-child { border-right:none; }
+.skill-name { font-family:var(--font-display); font-size:22px; font-style:italic; color:var(--bright); display:block; margin-bottom:16px; }
+.skill-bar-track { height:1px; background:var(--fg-dim); position:relative; margin-bottom:10px; }
+.skill-bar-fill { position:absolute; top:0; left:0; height:1px; background:var(--accent); width:0; transition:width 1.2s var(--ease-out); }
+.skill-cell.visible .skill-bar-fill { width:var(--w); }
+.skill-pct { font-size:8px; letter-spacing:0.3em; color:var(--fg-dim); }
+@media(max-width:900px){
+  .about-hero{grid-template-columns:1fr}
+  .about-portrait{border-right:none;border-bottom:var(--border);min-height:50vh}
+  .about-text{padding:48px 32px}
+  .cv-section{grid-template-columns:1fr}
+  .cv-section h2{position:static}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .skill-cell:nth-child(2n){border-right:none}
+  .skill-cell{border-bottom:var(--border)}
 }
-
-.about-portrait {
-  border-right: var(--border);
-  background: var(--bg2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-  position: relative;
-  overflow: hidden;
-}
-.about-portrait::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 70% 70% at 50% 50%,
-    transparent 50%, rgba(7,7,7,0.7) 100%);
-  pointer-events: none;
-  z-index: 2;
-}
-#portrait-canvas {
-  font-size: 7px;
-  line-height: 1.14;
-  letter-spacing: 0.7px;
-  color: var(--fg);
-  max-height: 80vh;
-  overflow: hidden;
-}
-
-.about-text {
-  padding: 72px 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.about-text h1 {
-  font-family: var(--font-display);
-  font-size: clamp(40px, 6vw, 80px);
-  font-weight: 700;
-  font-style: italic;
-  color: var(--bright);
-  line-height: 0.92;
-  margin-bottom: 28px;
-}
-.about-text .lead {
-  font-size: 13px;
-  line-height: 1.9;
-  color: var(--fg-muted);
-  max-width: 420px;
-  margin-bottom: 20px;
-}
-.about-text .lead strong {
-  color: var(--accent);
-  font-weight: 400;
-}
-
-.about-quote {
-  margin: 36px 0;
-  padding-left: 20px;
-  border-left: 2px solid var(--red);
-}
-.about-quote blockquote {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-style: italic;
-  font-weight: 400;
-  color: var(--bright);
-  line-height: 1.5;
-}
-.about-quote cite {
-  font-size: 9px;
-  letter-spacing: 0.35em;
-  color: var(--fg-dim);
-  text-transform: uppercase;
-  font-style: normal;
-  display: block;
-  margin-top: 12px;
-}
-
-/* ── CV / Timeline ───────────────────────────────────── */
-.cv-section {
-  padding: 80px 48px;
-  border-bottom: var(--border);
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 60px;
-}
-.cv-section h2 {
-  font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 700;
-  font-style: italic;
-  color: var(--bright);
-  line-height: 1;
-  position: sticky;
-  top: 80px;
-  align-self: start;
-}
-.timeline {
-  display: flex;
-  flex-direction: column;
-}
-.timeline-item {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 28px;
-  padding: 28px 0;
-  border-top: var(--border);
-}
-.timeline-year {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--red);
-  padding-top: 3px;
-}
-.timeline-content h3 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-style: italic;
-  color: var(--bright);
-  margin-bottom: 6px;
-}
-.timeline-content p {
-  font-size: 11px;
-  line-height: 1.7;
-  color: var(--fg-dim);
-}
-
-/* ── Skills ──────────────────────────────────────────── */
-.skills-grid {
-  padding: 80px 48px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border-bottom: var(--border);
-}
-.skill-cell {
-  padding: 40px 32px;
-  border-right: var(--border);
-}
-.skill-cell:last-child { border-right: none; }
-.skill-name {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-style: italic;
-  color: var(--bright);
-  display: block;
-  margin-bottom: 16px;
-}
-.skill-bar-track {
-  height: 1px;
-  background: var(--fg-dim);
-  position: relative;
-  margin-bottom: 10px;
-}
-.skill-bar-fill {
-  position: absolute;
-  top: 0; left: 0; height: 1px;
-  background: var(--accent);
-  width: 0;
-  transition: width 1.2s var(--ease-out);
-}
-.skill-cell.visible .skill-bar-fill { width: var(--w); }
-.skill-pct {
-  font-size: 8px;
-  letter-spacing: 0.3em;
-  color: var(--fg-dim);
-}
-
-/* ── Responsive ──────────────────────────────────────── */
-@media (max-width: 900px) {
-  .about-hero { grid-template-columns: 1fr; }
-  .about-portrait { border-right: none; border-bottom: var(--border); min-height: 50vh; }
-  .about-text { padding: 48px 32px; }
-  .cv-section { grid-template-columns: 1fr; }
-  .cv-section h2 { position: static; }
-  .skills-grid { grid-template-columns: repeat(2, 1fr); }
-  .skill-cell:nth-child(2n) { border-right: none; }
-  .skill-cell { border-bottom: var(--border); }
-}
-@media (max-width: 480px) {
-  .skills-grid { grid-template-columns: 1fr; }
-  .skill-cell { border-right: none; }
-  .cv-section { padding: 48px 24px; }
+@media(max-width:480px){
+  .skills-grid{grid-template-columns:1fr}
+  .skill-cell{border-right:none}
+  .cv-section{padding:48px 24px}
 }
 </style>
 </head>
 <body>
-
 <div id="cursor"></div>
 <div id="cursor-trail"></div>
-
 <nav id="nav">
-  <a href="index.html" class="nav-logo">
-    <div class="nav-logo-dot"></div>
-    VOID∙GLYPH
-  </a>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-dot"></div>VOID∙GLYPH</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="works.html">Works</a></li>
@@ -219,10 +63,7 @@
   </ul>
   <span class="nav-page-indicator" id="nav-indicator"></span>
 </nav>
-
 <div class="page-wrap">
-
-  <!-- HERO SPLIT -->
   <div class="about-hero">
     <div class="about-portrait">
       <pre id="portrait-canvas" class="ascii-render"></pre>
@@ -239,101 +80,69 @@
       <a href="works.html" class="btn"><span>View Works</span></a>
     </div>
   </div>
-
-  <!-- TIMELINE -->
   <section class="cv-section">
     <h2 class="fade-up">Selected<br>CV</h2>
     <div class="timeline">
       <div class="timeline-item fade-up">
         <span class="timeline-year">2024</span>
-        <div class="timeline-content">
-          <h3>Glyph Space — Solo Exhibition</h3>
-          <p>Foam Kunsthuis, Amsterdam. Full-gallery installation of proportional ASCII works at architectural scale, printed on matte newsprint at 600dpi.</p>
-        </div>
+        <div class="timeline-content"><h3>Glyph Space — Solo Exhibition</h3><p>Foam Kunsthuis, Amsterdam. Full-gallery installation of proportional ASCII works at architectural scale, printed on matte newsprint at 600dpi.</p></div>
       </div>
       <div class="timeline-item fade-up">
         <span class="timeline-year">2023</span>
-        <div class="timeline-content">
-          <h3>Type Directions 44 — Award of Excellence</h3>
-          <p>Type Directors Club, New York. Recognized for the Cascade and Meridian series as outstanding contributions to typographic art.</p>
-        </div>
+        <div class="timeline-content"><h3>Type Directions 44 — Award of Excellence</h3><p>Type Directors Club, New York. Recognized for the Cascade and Meridian series as outstanding contributions to typographic art.</p></div>
       </div>
       <div class="timeline-item fade-up">
         <span class="timeline-year">2022</span>
-        <div class="timeline-content">
-          <h3>Monochrome Matter — Group Show</h3>
-          <p>Whitechapel Gallery, London. Contribution of Penumbra triptych alongside fifteen international artists working in computational art.</p>
-        </div>
+        <div class="timeline-content"><h3>Monochrome Matter — Group Show</h3><p>Whitechapel Gallery, London. Contribution of Penumbra triptych alongside fifteen international artists working in computational art.</p></div>
       </div>
       <div class="timeline-item fade-up">
         <span class="timeline-year">2020</span>
-        <div class="timeline-content">
-          <h3>Residency — Fabrica Research Centre</h3>
-          <p>Six-month residency in Treviso developing the proportional glyph measurement technique that underpins all current works.</p>
-        </div>
+        <div class="timeline-content"><h3>Residency — Fabrica Research Centre</h3><p>Six-month residency in Treviso developing the proportional glyph measurement technique that underpins all current works.</p></div>
       </div>
       <div class="timeline-item fade-up">
         <span class="timeline-year">2012</span>
-        <div class="timeline-content">
-          <h3>Studio Founded</h3>
-          <p>VOID∙GLYPH established as an independent typographic art practice, initially producing monospace works before the shift to proportional measurement in 2019.</p>
-        </div>
+        <div class="timeline-content"><h3>Studio Founded</h3><p>VOID∙GLYPH established as an independent typographic art practice, initially producing monospace works before the shift to proportional measurement in 2019.</p></div>
       </div>
     </div>
   </section>
-
-  <!-- SKILLS -->
   <div class="skills-grid">
-    <div class="skill-cell fade-up" style="--w: 96%">
-      <span class="skill-name">Typography</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
-      <span class="skill-pct">96 / 100</span>
-    </div>
-    <div class="skill-cell fade-up" style="--w: 88%">
-      <span class="skill-name">Noise & Form</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
-      <span class="skill-pct">88 / 100</span>
-    </div>
-    <div class="skill-cell fade-up" style="--w: 82%">
-      <span class="skill-name">Print / Large Format</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
-      <span class="skill-pct">82 / 100</span>
-    </div>
-    <div class="skill-cell fade-up" style="--w: 74%">
-      <span class="skill-name">Generative Systems</span>
-      <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
-      <span class="skill-pct">74 / 100</span>
-    </div>
+    <div class="skill-cell fade-up" style="--w:96%"><span class="skill-name">Typography</span><div class="skill-bar-track"><div class="skill-bar-fill"></div></div><span class="skill-pct">96 / 100</span></div>
+    <div class="skill-cell fade-up" style="--w:88%"><span class="skill-name">Noise & Form</span><div class="skill-bar-track"><div class="skill-bar-fill"></div></div><span class="skill-pct">88 / 100</span></div>
+    <div class="skill-cell fade-up" style="--w:82%"><span class="skill-name">Print / Large Format</span><div class="skill-bar-track"><div class="skill-bar-fill"></div></div><span class="skill-pct">82 / 100</span></div>
+    <div class="skill-cell fade-up" style="--w:74%"><span class="skill-name">Generative Systems</span><div class="skill-bar-track"><div class="skill-bar-fill"></div></div><span class="skill-pct">74 / 100</span></div>
   </div>
-
-  <footer id="footer">
-    <span>© 2026 VOID∙GLYPH Studio</span>
-    <span>All works original · Typographic ASCII</span>
-  </footer>
-
+  <footer id="footer"><span>© 2026 VOID∙GLYPH Studio</span><span>All works original · Typographic ASCII</span></footer>
 </div>
-
-<script src="js/ascii-engine.js"></script>
-<script src="js/shared.js"></script>
 <script>
-// Portrait
-(function() {
-  const el = document.getElementById('portrait-canvas');
-  const cols = 52, rows = 44;
-  el.textContent = ASCII.scenePortrait(cols, rows);
-  // Subtle slow redraw to simulate breathing
-  setInterval(() => {
-    el.textContent = ASCII.scenePortrait(cols, rows);
-  }, 4000);
+const Noise=(()=>{const perm=new Uint8Array(512);const src=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];for(let i=0;i<256;i++)perm[i]=perm[i+256]=src[i];const fade=t=>t*t*t*(t*(t*6-15)+10);const lerp=(a,b,t)=>a+t*(b-a);const grad=(h,x,y)=>{const v=h&3,u=v<2?x:y,w=v<2?y:x;return((h&1)?-u:u)+((h&2)?-w:w);};function n2(x,y){const X=Math.floor(x)&255,Y=Math.floor(y)&255;x-=Math.floor(x);y-=Math.floor(y);const u=fade(x),v=fade(y),a=perm[X]+Y,b=perm[X+1]+Y;return lerp(lerp(grad(perm[a],x,y),grad(perm[b],x-1,y),u),lerp(grad(perm[a+1],x,y-1),grad(perm[b+1],x-1,y-1),u),v);}function fbm(x,y,oct=4,lac=2.1,gain=0.5){let v=0,a=0.5,f=1,mx=0;for(let i=0;i<oct;i++){v+=n2(x*f,y*f)*a;mx+=a;a*=gain;f*=lac;}return v/mx;}return{n2,fbm};})();
+const RAMP_PORT=" .',-:;~!|lirftcvxznsaoeykhdpqgwTCSFUPBKNOHWM#&@";
+function scenePortrait(c,r,cols,rows){
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
+  const fD=Math.sqrt((nx*nx)/.58+((ny-.05)**2)/.88);
+  if(fD>1)return{ch:' ',color:'#050505'};
+  if(ny<-.5){const h=Noise.fbm(c*.22,r*.22,3)*.5+.5,b=h*.09+.02;const v=Math.round(b*210+28);return{ch:RAMP_PORT[Math.floor(Math.pow(1-Math.max(0,Math.min(1,b)),1)*(RAMP_PORT.length-1))],color:`rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`};}
+  const le=Math.sqrt(((nx+.3)**2)/.023+((ny+.12)**2)/.008),re=Math.sqrt(((nx-.3)**2)/.023+((ny+.12)**2)/.008);
+  if(le<1||re<1){const pd=Math.min(Math.sqrt((nx+.3)**2+(ny+.12)**2),Math.sqrt((nx-.3)**2+(ny+.12)**2)),b=pd<.05?.02:.1;const v=Math.round(b*210+28);return{ch:RAMP_PORT[Math.floor((1-b)*(RAMP_PORT.length-1))],color:`rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`};}
+  if(ny>.3&&ny<.45&&Math.abs(nx)<.2){const b=ny<.37?.2:.1;const v=Math.round(b*210+28);return{ch:RAMP_PORT[Math.floor((1-b)*(RAMP_PORT.length-1))],color:`rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`};}
+  const light=Math.max(0,(-.4*nx+-.55*ny+.55)),sub=Noise.fbm(c*.28,r*.28,3)*.5+.5,b=Math.min(.9,.26+light*.44+sub*.09);
+  const v=Math.round(b*210+28);return{ch:RAMP_PORT[Math.floor(Math.pow(1-Math.max(0,Math.min(1,b)),1)*(RAMP_PORT.length-1))],color:`rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`};
+}
+(function(){
+  const el=document.getElementById('portrait-canvas');
+  const cols=52,rows=44;
+  function draw(){
+    let txt='';
+    for(let r=0;r<rows;r++){for(let c=0;c<cols;c++){txt+=scenePortrait(c,r,cols,rows).ch;}if(r<rows-1)txt+='\n';}
+    el.textContent=txt;
+  }
+  draw();setInterval(draw,4000);
 })();
-
-// Skill bars trigger on visible
-document.querySelectorAll('.skill-cell').forEach(cell => {
-  const obs = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting) { cell.classList.add('visible'); obs.unobserve(cell); }
-  }, { threshold: 0.3 });
-  obs.observe(cell);
-});
+document.querySelectorAll('.skill-cell').forEach(cell=>{const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){cell.classList.add('visible');obs.unobserve(cell);}},{threshold:.3});obs.observe(cell);});
+(function(){const dot=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');if(!dot||!trail)return;let mx=0,my=0,tx=0,ty=0;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>dot.classList.add('hover'));el.addEventListener('mouseleave',()=>dot.classList.remove('hover'));});(function loop(){tx+=(mx-tx)*.15;ty+=(my-ty)*.15;dot.style.left=mx+'px';dot.style.top=my+'px';trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop);})();})();
+(function(){const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.12});document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));})();
+document.querySelector('.page-wrap').classList.add('page-enter');
+document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('href')==='about.html')a.classList.add('active');});
+document.getElementById('nav-indicator').textContent='About';
 </script>
 </body>
 </html>
