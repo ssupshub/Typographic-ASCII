@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — VOID∙GLYPH</title>
+<title>Contact &#8212; VOID&#8729;GLYPH</title>
 <link rel="stylesheet" href="css/design.css">
 <style>
 .contact-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 64px - 57px);border-bottom:var(--border)}
 .contact-left{position:relative;overflow:hidden;border-right:var(--border);display:flex;flex-direction:column;justify-content:flex-end;padding:60px 52px}
 #contact-bg-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;opacity:0.18;pointer-events:none}
-.contact-left::after{content:'';position:absolute;inset:0;background:linear-gradient(to top, var(--bg) 0%, rgba(7,7,7,0.2) 50%, var(--bg2) 100%);pointer-events:none}
+.contact-left::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,rgba(7,7,7,0.2) 50%,var(--bg2) 100%);pointer-events:none}
 .contact-heading{position:relative;z-index:2}
 .contact-heading h1{font-family:var(--font-display);font-size:clamp(52px,8vw,100px);font-weight:700;font-style:italic;color:var(--bright);line-height:.88;margin-bottom:24px}
 .contact-heading p{font-size:11px;line-height:1.85;color:var(--fg-muted);max-width:360px}
@@ -40,7 +40,7 @@
 <div id="cursor"></div>
 <div id="cursor-trail"></div>
 <nav id="nav">
-  <a href="index.html" class="nav-logo"><div class="nav-logo-dot"></div>VOID∙GLYPH</a>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-dot"></div>VOID&#8729;GLYPH</a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="works.html">Works</a></li>
@@ -55,13 +55,13 @@
     <div class="contact-left">
       <canvas id="contact-bg-canvas"></canvas>
       <div class="contact-heading">
-        <span class="label">— Commissions &amp; Inquiry</span>
-        <h1>Let's<br>Make<br>Something</h1>
+        <span class="label">&#8212; Commissions &amp; Inquiry</span>
+        <h1>Let&#8217;s<br>Make<br>Something</h1>
         <p>Open for commissions, exhibitions, residencies, and institutional partnerships. Response within 48 hours.</p>
       </div>
     </div>
     <div class="contact-right">
-      <span class="label">— Send a message</span>
+      <span class="label">&#8212; Send a message</span>
       <form id="contact-form" novalidate onsubmit="sendForm(event)">
         <div class="form-row">
           <div class="field"><label for="fname">First name</label><input type="text" id="fname" placeholder="Ada"></div>
@@ -70,55 +70,36 @@
         <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="ada@example.com"></div>
         <div class="field">
           <label for="inquiry">Type of inquiry</label>
-          <select id="inquiry">
-            <option value="" disabled selected>Select —</option>
-            <option>Commission · Original work</option>
-            <option>Exhibition · Solo</option>
-            <option>Exhibition · Group</option>
-            <option>Residency</option>
-            <option>Print · Large format</option>
-            <option>Press &amp; Editorial</option>
-            <option>Other</option>
-          </select>
+          <select id="inquiry"><option value="" disabled selected>Select &#8212;</option><option>Commission &#183; Original work</option><option>Exhibition &#183; Solo</option><option>Exhibition &#183; Group</option><option>Residency</option><option>Print &#183; Large format</option><option>Press &amp; Editorial</option><option>Other</option></select>
         </div>
-        <div class="field"><label for="message">Message</label><textarea id="message" placeholder="Tell me about the project — medium, scale, timeline, context..."></textarea></div>
+        <div class="field"><label for="message">Message</label><textarea id="message" placeholder="Tell me about the project..."></textarea></div>
         <div class="form-submit">
           <p class="form-note">All inquiries are read personally. No automated responses.</p>
           <button type="submit" class="btn" id="send-btn"><span id="btn-txt">Send Message</span></button>
         </div>
-        <div class="suc" id="suc">✓ &nbsp; Message received. I'll be in touch within 48 hours.</div>
+        <div class="suc" id="suc">&#10003; &nbsp; Message received. I&#8217;ll be in touch within 48 hours.</div>
       </form>
     </div>
   </div>
   <div class="info-strip">
     <div class="info-cell fade-up"><span class="info-cell-label">Email</span><div class="info-cell-val"><a href="mailto:hello@voidglyph.art">hello@voidglyph.art</a></div></div>
     <div class="info-cell fade-up"><span class="info-cell-label">Studio</span><div class="info-cell-val">Amsterdam, NL<br>Remote worldwide</div></div>
-    <div class="info-cell fade-up"><span class="info-cell-label">Response</span><div class="info-cell-val">Within 48 hours<br>Mon – Fri</div></div>
+    <div class="info-cell fade-up"><span class="info-cell-label">Response</span><div class="info-cell-val">Within 48 hours<br>Mon &#8211; Fri</div></div>
   </div>
-  <footer id="footer"><span>© 2026 VOID∙GLYPH Studio</span><span>All works original · Typographic ASCII</span></footer>
+  <footer id="footer"><span>&#169; 2026 VOID&#8729;GLYPH Studio</span><span>All works original &#183; Typographic ASCII</span></footer>
 </div>
 <script>
 const Noise=(()=>{const perm=new Uint8Array(512);const src=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];for(let i=0;i<256;i++)perm[i]=perm[i+256]=src[i];const fade=t=>t*t*t*(t*(t*6-15)+10);const lerp=(a,b,t)=>a+t*(b-a);const grad=(h,x,y)=>{const v=h&3,u=v<2?x:y,w=v<2?y:x;return((h&1)?-u:u)+((h&2)?-w:w);};function n2(x,y){const X=Math.floor(x)&255,Y=Math.floor(y)&255;x-=Math.floor(x);y-=Math.floor(y);const u=fade(x),v=fade(y),a=perm[X]+Y,b=perm[X+1]+Y;return lerp(lerp(grad(perm[a],x,y),grad(perm[b],x-1,y),u),lerp(grad(perm[a+1],x,y-1),grad(perm[b+1],x-1,y-1),u),v);}function fbm(x,y,oct=4,lac=2.1,gain=0.5){let v=0,a=0.5,f=1,mx=0;for(let i=0;i<oct;i++){v+=n2(x*f,y*f)*a;mx+=a;a*=gain;f*=lac;}return v/mx;}return{n2,fbm};})();
-const RAMP=" .'`,-_:;~!|lIi1/\\(){}[]rftjcvxznsaoeykhdpqgwmTCSFUPVXBKGDNQAOHWM#&%$@";
+const RAMP=" .'`,-_:;~!|lIi1/\(){}[]rftjcvxznsaoeykhdpqgwmTCSFUPVXBKGDNQAOHWM#&%$@";
 function charAt(b){return RAMP[Math.floor(Math.pow(1-Math.max(0,Math.min(1,b)),1)*(RAMP.length-1))];}
 function scenePenumbra(c,r,cols,rows,t){const nx=(c/cols)*2-1,ny=(r/rows)*2-1;const sd=Math.sqrt(nx*nx+ny*ny)-.68;const lx=-.58,ly=-.48;const ldist=Math.sqrt((nx-lx)**2+(ny-ly)**2);if(sd<0){const nX=nx/.68,nY=ny/.68;const diff=Math.max(0,(nX*(-lx)+nY*(-ly))*.95);const sub=Noise.fbm(nx*3.8+t*.04,ny*3.8,4)*.5+.5;const b=Math.max(.02,Math.min(.95,diff*.72+sub*.22));const v=Math.round(b*210+18);return{ch:charAt(b),color:`rgb(${v},${Math.round(v*.96)},${Math.round(v*.88)})`};}const glow=Math.max(0,1-Math.abs(sd)*5.5)*.28;const bg=Noise.fbm(nx*2.8+t*.05,ny*2.8,3)*.5+.5;const amb=Math.max(0,1-ldist*.88)*.18;const b=Math.max(0,bg*.13+glow+amb);const v=Math.round(b*210+28);return{ch:charAt(b),color:`rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`};}
 (function(){
-  const canvas=document.getElementById('contact-bg-canvas');
-  if(!canvas)return;
-  function render(t){
-    const W=canvas.parentElement.clientWidth,H=canvas.parentElement.clientHeight;
-    if(!W||!H)return;
-    const fs=8,cw=Math.ceil(fs*.605),ch=Math.ceil(fs*1.2);
-    const cols=Math.ceil(W/cw),rows=Math.ceil(H/ch);
-    if(canvas.width!==W||canvas.height!==H){canvas.width=W;canvas.height=H;}
-    const ctx=canvas.getContext('2d');ctx.fillStyle='#050505';ctx.fillRect(0,0,W,H);
-    ctx.font=`300 ${fs}px 'IBM Plex Mono',monospace`;ctx.textBaseline='top';
-    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const{ch:char,color}=scenePenumbra(c,r,cols,rows,t);ctx.fillStyle=color;ctx.fillText(char,c*cw,r*ch);}
-  }
+  const canvas=document.getElementById('contact-bg-canvas');if(!canvas)return;
+  function render(t){const W=canvas.parentElement.clientWidth,H=canvas.parentElement.clientHeight;if(!W||!H)return;const fs=8,cw=Math.ceil(fs*.605),ch=Math.ceil(fs*1.2);const cols=Math.ceil(W/cw),rows=Math.ceil(H/ch);if(canvas.width!==W||canvas.height!==H){canvas.width=W;canvas.height=H;}const ctx=canvas.getContext('2d');ctx.fillStyle='#050505';ctx.fillRect(0,0,W,H);ctx.font=`300 ${fs}px 'IBM Plex Mono',monospace`;ctx.textBaseline='top';for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const{ch:char,color}=scenePenumbra(c,r,cols,rows,t);ctx.fillStyle=color;ctx.fillText(char,c*cw,r*ch);}}
   let t=0;(function loop(){render(t);t+=.016*.6;requestAnimationFrame(loop);})();
 })();
 function sendForm(e){e.preventDefault();const btn=document.getElementById('send-btn');document.getElementById('btn-txt').textContent='Sending…';btn.disabled=true;setTimeout(()=>{document.getElementById('suc').classList.add('vis');document.getElementById('btn-txt').textContent='Sent ✓';},900);}
-(function(){const dot=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');if(!dot||!trail)return;let mx=0,my=0,tx=0,ty=0;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>dot.classList.add('hover'));el.addEventListener('mouseleave',()=>dot.classList.remove('hover'));});(function loop(){tx+=(mx-tx)*.15;ty+=(my-ty)*.15;dot.style.left=mx+'px';dot.style.top=my+'px';trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop);})();})();
+(function(){const dot=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');if(!dot||!trail)return;let mx=0,my=0,tx=0,ty=0;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});(function loop(){tx+=(mx-tx)*.15;ty+=(my-ty)*.15;dot.style.left=mx+'px';dot.style.top=my+'px';trail.style.left=tx+'px';trail.style.top=ty+'px';requestAnimationFrame(loop);})();})();
 (function(){const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible');obs.unobserve(x.target);}});},{threshold:.12});document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));})();
 document.querySelector('.page-wrap').classList.add('page-enter');
 document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('href')==='contact.html')a.classList.add('active');});
