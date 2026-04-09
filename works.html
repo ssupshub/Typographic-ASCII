@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Works — VOID∙GLYPH</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap">
 <link rel="stylesheet" href="css/design.css">
 <style>
@@ -201,16 +202,29 @@
 .work-card:hover .work-info { opacity: 1; transform: translateY(0); }
 .work-card:hover .work-ascii-wrap { filter: brightness(0.5); }
 
+/* FIX: ascii wrap must fill the card so canvas can size itself to the container */
 .work-ascii-wrap {
   flex: 1;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 0;          /* removed padding so canvas fills fully */
   transition: filter 0.35s;
+  position: relative;  /* needed for absolute canvas */
+  min-height: 0;
 }
-.work-ascii-wrap canvas { display: block; }
+
+/* FIX: canvas fills the wrapper; JS reads clientWidth/clientHeight to size it */
+.work-ascii-wrap canvas {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  /* canvas pixel dims set by JS; CSS stretches to fill */
+  object-fit: cover;
+}
 
 .work-info {
   position: absolute;
@@ -422,7 +436,6 @@
 
 .modal-divider {
   height: 1px;
-  background: var(--border);
   background: #222;
   margin: 24px 0;
 }
@@ -629,7 +642,7 @@
   .typo-detail-section { grid-template-columns: repeat(2, 1fr); }
   .modal-spec-grid { grid-template-columns: 1fr; }
   .works-grid.list-view .work-card { flex-direction: column; }
-  .works-grid.list-view .work-ascii-wrap { width: 100%; height: 200px; }
+  .works-grid.list-view .work-ascii-wrap { width: 100%; height: 200px; flex-shrink: 0; position: relative; }
 }
 </style>
 </head>
@@ -846,9 +859,7 @@
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- ═══ NEW TYPOGRAPHIC WORKS ═══ -->
-
-    <!-- 07 — Logotype: wave of text built from repeating letterforms -->
+    <!-- 07 — Logotype Wave -->
     <div class="work-card featured" data-category="typographic" data-index="6">
       <div class="work-ascii-wrap"><canvas id="wk6"></canvas></div>
       <div class="work-info">
@@ -948,7 +959,7 @@
       <span class="work-arrow">↗</span>
     </div>
 
-    <!-- 11 — Ascender / Descender study -->
+    <!-- 11 — Ascender -->
     <div class="work-card" data-category="typographic" data-index="10">
       <div class="work-ascii-wrap"><canvas id="wk10"></canvas></div>
       <div class="work-info">
@@ -1114,7 +1125,10 @@ const Noise = (() => {
 })();
 
 /* ─────────────────────────────────────────────
-   ASCII CANVAS RENDERER
+   ASCII RENDERER
+   FIX: renderToCanvas now accepts a wrapper element and auto-sizes
+   the canvas to fill it, computing cols/rows from actual pixel dims.
+   This prevents the blank-canvas issue where canvas stayed 0×0.
 ───────────────────────────────────────────── */
 const RAMPS = {
   std:  " .'`,-_:;~!|lIi1/\\(){}[]rftjcvxznsaoeykhdpqgwmTCSFUPVXBKGDNQAOHWM#&%$@",
@@ -1129,6 +1143,39 @@ function charAt(b, ramp='std') {
   return r[Math.floor(Math.pow(1-Math.max(0,Math.min(1,b)),1)*(r.length-1))];
 }
 
+/* FIX: Primary render function — sizes canvas to fill its parent wrapper */
+function renderFill(canvas, sceneFn, t, fontSize) {
+  const wrap = canvas.parentElement;
+  const W = wrap.clientWidth  || 200;
+  const H = wrap.clientHeight || 200;
+
+  const cw = Math.ceil(fontSize * 0.605);
+  const ch = Math.ceil(fontSize * 1.2);
+  const cols = Math.max(1, Math.floor(W / cw));
+  const rows = Math.max(1, Math.floor(H / ch));
+
+  // Only resize canvas pixel buffer when dimensions actually change
+  if (canvas.width !== cols * cw || canvas.height !== rows * ch) {
+    canvas.width  = cols * cw;
+    canvas.height = rows * ch;
+  }
+
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#050505';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = `300 ${fontSize}px 'IBM Plex Mono',monospace`;
+  ctx.textBaseline = 'top';
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const { ch: char, color } = sceneFn(c, r, cols, rows, t);
+      ctx.fillStyle = color;
+      ctx.fillText(char, c * cw, r * ch);
+    }
+  }
+}
+
+/* Legacy fixed-grid render — kept for modal */
 function renderToCanvas(canvas, cols, rows, sceneFn, t, fontSize=11) {
   const cw = Math.ceil(fontSize*0.605);
   const ch = Math.ceil(fontSize*1.2);
@@ -1152,405 +1199,125 @@ function renderToCanvas(canvas, cols, rows, sceneFn, t, fontSize=11) {
 /* ─────────────────────────────────────────────
    COLOR HELPERS
 ───────────────────────────────────────────── */
-const cWarm = b => { const v=Math.round(b*210+28); return `rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`; };
-const cCool = b => { const v=Math.round(b*200+20); return `rgb(${Math.round(v*.88)},${Math.round(v*.92)},${v})`; };
-const cAmber = b => { const v=Math.round(b*190+22); return `rgb(${v},${Math.round(v*.78)},${Math.round(v*.28)})`; };
-const cGreen = b => { const v=Math.round(b*200+18); return `rgb(${Math.round(v*.38)},${v},${Math.round(v*.42)})`; };
-const cBlue  = b => { const v=Math.round(b*200+15); return `rgb(${Math.round(v*.4)},${Math.round(v*.7)},${v})`; };
+const cWarm  = b => { const v=Math.round(b*210+28); return `rgb(${v},${Math.round(v*.97)},${Math.round(v*.9)})`; };
+const cCool  = b => { const v=Math.round(b*200+20); return `rgb(${Math.round(v*.88)},${Math.round(v*.92)},${v})`; };
 
 /* ─────────────────────────────────────────────
-   ORIGINAL 6 SCENES
+   SCENES
 ───────────────────────────────────────────── */
 function sceneEye(c,r,cols,rows,t){
   const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
   const ex=nx,ey=ny*2.5;
   const eyeD=Math.sqrt(ex*ex+ey*ey)-1.0;
-  if(eyeD>0.04){
-    const bg=Noise.fbm(c*0.055+t*0.08,r*0.07+t*0.06,2)*.5+.5;
-    const b=bg*0.08;
-    return{ch:charAt(b,'std'),color:cWarm(b)};
-  }
-  if(eyeD>-0.08){
-    const whiteB=(0.08-eyeD)/0.12*0.55;
-    const vein=Noise.fbm(c*0.3+t*.02,r*0.3,3)*.5+.5;
-    const b=whiteB*(0.4+vein*.1);
-    return{ch:charAt(b,'std'),color:`rgb(${Math.round(b*180+18)},${Math.round(b*160+15)},${Math.round(b*140+12)})`};
-  }
-  const px=Math.sin(t*.38)*.04,py=Math.cos(t*.28)*.025;
-  const pd=Math.sqrt((nx-px)**2+(ny-py)**2);
-  if(pd<0.19){
-    const deep=Noise.fbm(c*.3+t,r*.3+t*.7,2)*.5+.5;
-    const b=deep*.05;
-    return{ch:charAt(b,'shp'),color:cWarm(b)};
-  }
-  const angle=Math.atan2(ny-py,nx-px);
-  const ir1=Noise.fbm(Math.cos(angle)*4+t*.22,Math.sin(angle)*4+pd*7,4)*.5+.5;
-  const ir2=Noise.fbm(pd*6+t*.1,angle*1.6,3)*.5+.5;
-  const ir3=Noise.fbm(c*.18+t*.15,r*.18,2)*.5+.5;
-  const edgeFade=Math.max(0,1-Math.pow(Math.abs(eyeD)*18,0.4));
-  const b=(ir1*.45+ir2*.35+ir3*.15+edgeFade*.05)*.88+.06;
-  const clamp=Math.max(0.08,Math.min(0.94,b));
-  return{ch:charAt(clamp,'org'),color:`rgb(${Math.round(clamp*195+18)},${Math.round(clamp*160+14)},${Math.round(clamp*90+8)})`};
+  if(eyeD>0.04){const bg=Noise.fbm(c*0.055+t*0.08,r*0.07+t*0.06,2)*.5+.5;const b=bg*0.08;return{ch:charAt(b,'std'),color:cWarm(b)};}
+  if(eyeD>-0.08){const whiteB=(0.08-eyeD)/0.12*0.55,vein=Noise.fbm(c*0.3+t*.02,r*0.3,3)*.5+.5,b=whiteB*(0.4+vein*.1);return{ch:charAt(b,'std'),color:`rgb(${Math.round(b*180+18)},${Math.round(b*160+15)},${Math.round(b*140+12)})`};}
+  const px=Math.sin(t*.38)*.04,py=Math.cos(t*.28)*.025,pd=Math.sqrt((nx-px)**2+(ny-py)**2);
+  if(pd<0.19){const deep=Noise.fbm(c*.3+t,r*.3+t*.7,2)*.5+.5,b=deep*.05;return{ch:charAt(b,'shp'),color:cWarm(b)};}
+  const angle=Math.atan2(ny-py,nx-px),ir1=Noise.fbm(Math.cos(angle)*4+t*.22,Math.sin(angle)*4+pd*7,4)*.5+.5,ir2=Noise.fbm(pd*6+t*.1,angle*1.6,3)*.5+.5,ir3=Noise.fbm(c*.18+t*.15,r*.18,2)*.5+.5,edgeFade=Math.max(0,1-Math.pow(Math.abs(eyeD)*18,0.4));
+  const b=Math.max(0.08,Math.min(0.94,(ir1*.45+ir2*.35+ir3*.15+edgeFade*.05)*.88+.06));
+  return{ch:charAt(b,'org'),color:`rgb(${Math.round(b*195+18)},${Math.round(b*160+14)},${Math.round(b*90+8)})`};
 }
 
 function sceneCascade(c,r,cols,rows,t){
-  const nx=c/cols,ny=r/rows;
-  const flow=Noise.fbm(nx*2.8,ny*5.5-t*.38,5);
-  const turb=Noise.fbm(nx*7+flow,ny*7,3)*.5+.5;
-  const edge=Math.min(nx,1-nx)*3.8;
+  const nx=c/cols,ny=r/rows,flow=Noise.fbm(nx*2.8,ny*5.5-t*.38,5),turb=Noise.fbm(nx*7+flow,ny*7,3)*.5+.5,edge=Math.min(nx,1-nx)*3.8;
   const b=Math.pow(Math.max(0,Math.min(1,(flow*.42+.5)*Math.min(1,edge*.7)+turb*.38)),1.12);
   return{ch:charAt(b,'org'),color:cCool(b)};
 }
 
 function sceneMeridian(c,r,cols,rows,t){
-  const nx=c/cols,ny=r/rows;
-  const beam=Math.abs((nx-ny+Math.sin(t*.13)*.04)*2.2);
-  const bLight=Math.max(0,1-beam*2.3);
-  const noise=Noise.fbm(nx*4.5+t*.07,ny*4.5,4)*.5+.5;
-  const v=Math.min(nx,1-nx,ny,1-ny)*4.5;
+  const nx=c/cols,ny=r/rows,beam=Math.abs((nx-ny+Math.sin(t*.13)*.04)*2.2),bLight=Math.max(0,1-beam*2.3),noise=Noise.fbm(nx*4.5+t*.07,ny*4.5,4)*.5+.5,v=Math.min(nx,1-nx,ny,1-ny)*4.5;
   const b=Math.pow(Math.max(0,Math.min(1,bLight*.82+noise*.26)*Math.min(1,v)),.78);
   return{ch:charAt(b,'shp'),color:cWarm(b)};
 }
 
 function scenePenumbra(c,r,cols,rows,t){
-  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
-  const sd=Math.sqrt(nx*nx+ny*ny)-0.68;
-  const lx=-0.58,ly=-0.48;
-  const ldist=Math.sqrt((nx-lx)**2+(ny-ly)**2);
-  if(sd<0){
-    const nX=nx/.68,nY=ny/.68;
-    const diff=Math.max(0,(nX*(-lx)+nY*(-ly))*.95);
-    const sub=Noise.fbm(nx*3.8+t*.04,ny*3.8,4)*.5+.5;
-    const b=Math.max(.02,Math.min(.95,diff*.72+sub*.22));
-    const v=Math.round(b*210+18);
-    return{ch:charAt(b,'port'),color:`rgb(${v},${Math.round(v*.96)},${Math.round(v*.88)})`};
-  }
-  const glow=Math.max(0,1-Math.abs(sd)*5.5)*.28;
-  const bg=Noise.fbm(nx*2.8+t*.05,ny*2.8,3)*.5+.5;
-  const amb=Math.max(0,1-ldist*.88)*.18;
-  const b=Math.max(0,bg*.13+glow+amb);
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1,sd=Math.sqrt(nx*nx+ny*ny)-0.68,lx=-0.58,ly=-0.48,ldist=Math.sqrt((nx-lx)**2+(ny-ly)**2);
+  if(sd<0){const nX=nx/.68,nY=ny/.68,diff=Math.max(0,(nX*(-lx)+nY*(-ly))*.95),sub=Noise.fbm(nx*3.8+t*.04,ny*3.8,4)*.5+.5,b=Math.max(.02,Math.min(.95,diff*.72+sub*.22));const v=Math.round(b*210+18);return{ch:charAt(b,'port'),color:`rgb(${v},${Math.round(v*.96)},${Math.round(v*.88)})`};}
+  const glow=Math.max(0,1-Math.abs(sd)*5.5)*.28,bg=Noise.fbm(nx*2.8+t*.05,ny*2.8,3)*.5+.5,amb=Math.max(0,1-ldist*.88)*.18,b=Math.max(0,bg*.13+glow+amb);
   return{ch:charAt(b,'std'),color:cWarm(b)};
 }
 
 function sceneLiminal(c,r,cols,rows,t){
-  const nx=c/cols,ny=r/rows;
-  const horizon=.44+Noise.fbm(nx*1.8+t*.05,0,2)*.07;
-  const distH=Math.abs(ny-horizon);
-  const fog=Noise.fbm(nx*3.8-t*.09,ny*2.8,5)*.5+.5;
-  const sky=ny<horizon?(1-ny)*.13+fog*.11:0;
-  const gnd=ny>horizon?(ny-horizon)*.62+fog*.32:0;
-  const glow=Math.max(0,1-distH*11)*.5;
-  const b=Math.pow(Math.max(0,Math.min(1,sky+gnd+glow)),.88);
-  const warm=Math.max(0,1-distH*8);
+  const nx=c/cols,ny=r/rows,horizon=.44+Noise.fbm(nx*1.8+t*.05,0,2)*.07,distH=Math.abs(ny-horizon),fog=Noise.fbm(nx*3.8-t*.09,ny*2.8,5)*.5+.5;
+  const sky=ny<horizon?(1-ny)*.13+fog*.11:0,gnd=ny>horizon?(ny-horizon)*.62+fog*.32:0,glow=Math.max(0,1-distH*11)*.5;
+  const b=Math.pow(Math.max(0,Math.min(1,sky+gnd+glow)),.88),warm=Math.max(0,1-distH*8);
   const rv=Math.round(b*200+15+warm*30),gv=Math.round(b*175+12+warm*15),bv=Math.round(b*130+10);
   return{ch:charAt(b,'org'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})`};
 }
 
 function sceneThreshold(c,r,cols,rows,t){
-  const nx=(c/cols)*2-1,ny=(r/rows)*2-1;
-  const dist=Math.sqrt(nx*nx+ny*ny);
-  const angle=Math.atan2(ny,nx);
-  const spiral=Math.abs(Math.sin(angle*4-dist*7.5+t*.28))*.52;
-  const radial=Math.max(0,1-dist*.88);
-  const center=Math.max(0,1-dist*3.8);
-  const noise=Noise.fbm(nx*2.8+t*.08,ny*2.8,4)*.5+.5;
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1,dist=Math.sqrt(nx*nx+ny*ny),angle=Math.atan2(ny,nx);
+  const spiral=Math.abs(Math.sin(angle*4-dist*7.5+t*.28))*.52,radial=Math.max(0,1-dist*.88),center=Math.max(0,1-dist*3.8),noise=Noise.fbm(nx*2.8+t*.08,ny*2.8,4)*.5+.5;
   const b=Math.min(.95,Math.max(0,spiral*radial*.62+center*.38+noise*.14));
   return{ch:charAt(b,'shp'),color:cCool(b)};
 }
 
-/* ─────────────────────────────────────────────
-   NEW TYPOGRAPHIC SCENES (07–12)
-───────────────────────────────────────────── */
-
-// 07 — Logotype Wave: sinusoidal column displacement with compound phase
 function sceneLogotypeWave(c,r,cols,rows,t){
-  const nx=c/cols, ny=r/rows;
-  // compound wave: two frequencies beating together
-  const wave1 = Math.sin(nx*Math.PI*3.2 - t*0.55) * 0.28;
-  const wave2 = Math.sin(nx*Math.PI*1.1 - t*0.28 + 1.1) * 0.14;
-  const wave  = wave1 + wave2;
-  // effective y after displacement
-  const ey = ny - wave;
-  const distToWave = Math.abs(ey - 0.5);
-  // core band
-  const band = Math.max(0, 1 - distToWave * 14) * 0.9;
-  // shoulder glow
-  const shoulder = Math.max(0, 1 - distToWave * 5) * 0.28;
-  // noise texture within
-  const noise = Noise.fbm(nx*5 + t*0.07, ny*5, 3) * 0.5 + 0.5;
-  const b = Math.min(0.95, band * (0.6 + noise*0.4) + shoulder * 0.3);
-  // warm amber glow on the wave crest
-  const warmness = band;
-  const rv = Math.round(b*200+20 + warmness*40);
-  const gv = Math.round(b*170+14 + warmness*18);
-  const bv = Math.round(b*110+10);
-  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+  const nx=c/cols,ny=r/rows,wave1=Math.sin(nx*Math.PI*3.2-t*0.55)*0.28,wave2=Math.sin(nx*Math.PI*1.1-t*0.28+1.1)*0.14,wave=wave1+wave2,ey=ny-wave,distToWave=Math.abs(ey-0.5);
+  const band=Math.max(0,1-distToWave*14)*0.9,shoulder=Math.max(0,1-distToWave*5)*0.28,noise=Noise.fbm(nx*5+t*0.07,ny*5,3)*0.5+0.5;
+  const b=Math.min(0.95,band*(0.6+noise*0.4)+shoulder*0.3),warmness=band;
+  const rv=Math.round(b*200+20+warmness*40),gv=Math.round(b*170+14+warmness*18),bv=Math.round(b*110+10);
+  return{ch:charAt(b,'typo'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})`};
 }
 
-// 08 — Baseline Drift: per-column independent baseline shift
 function sceneBaselineDrift(c,r,cols,rows,t){
-  const nx=c/cols, ny=r/rows;
-  // each column has its own noise-driven vertical offset
-  const colPhase = Noise.n2(nx*3.5, t*0.18) * 0.5 + 0.5;
-  const drift = (colPhase - 0.5) * 0.35;
-  const ey = ny - drift;
-  // three horizontal text bands (cap, x, descender zones)
-  const zones = [0.28, 0.52, 0.76];
-  let maxB = 0;
-  zones.forEach((z, i) => {
-    const d = Math.abs(ey - z);
-    const w = i === 0 ? 0.04 : 0.032; // cap line slightly heavier
-    const intensity = Math.max(0, 1 - d / w);
-    maxB = Math.max(maxB, intensity);
-  });
-  // background field
-  const bg = Noise.fbm(nx*6+t*0.05, ny*4, 3) * 0.5 + 0.5;
-  const b = Math.min(0.95, maxB * 0.85 + bg * 0.08);
-  // color: brighter zones warmer, background cool
-  const warmR = maxB;
-  const rv = Math.round(b*(180+warmR*30)+15);
-  const gv = Math.round(b*(150+warmR*15)+12);
-  const bv = Math.round(b*120+10);
-  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+  const nx=c/cols,ny=r/rows,colPhase=Noise.n2(nx*3.5,t*0.18)*0.5+0.5,drift=(colPhase-0.5)*0.35,ey=ny-drift;
+  const zones=[0.28,0.52,0.76];let maxB=0;
+  zones.forEach((z,i)=>{const d=Math.abs(ey-z),w=i===0?0.04:0.032,intensity=Math.max(0,1-d/w);maxB=Math.max(maxB,intensity);});
+  const bg=Noise.fbm(nx*6+t*0.05,ny*4,3)*0.5+0.5,b=Math.min(0.95,maxB*0.85+bg*0.08),warmR=maxB;
+  const rv=Math.round(b*(180+warmR*30)+15),gv=Math.round(b*(150+warmR*15)+12),bv=Math.round(b*120+10);
+  return{ch:charAt(b,'typo'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})`};
 }
 
-// 09 — Glyph Rain: per-column phase sinusoidal drop with trailing decay
 function sceneGlyphRain(c,r,cols,rows,t){
-  const nx=c/cols, ny=r/rows;
-  // unique phase and speed per column, seeded by column index
-  const colSeed = Noise.n2(nx*8.3, 0) * 0.5 + 0.5;
-  const speed = 0.4 + colSeed * 0.8;
-  const phase = colSeed * Math.PI * 2;
-  // head position: travels down over time
-  const head = ((t * speed + phase) % (Math.PI * 2)) / (Math.PI * 2);
-  const dist = ny - head;
-  // leading head: bright
-  const lead = Math.max(0, 1 - Math.abs(dist) * 26) * 0.9;
-  // trailing tail: exponential decay above head
-  const tail = dist < 0 ? Math.exp(dist * 14) * 0.55 : 0;
-  // noise overlay
-  const noise = Noise.fbm(nx*4+t*.06, ny*5+t*.04, 2) * 0.5 + 0.5;
-  const b = Math.min(0.95, lead + tail * 0.7 + noise * 0.06);
-  // green-tinted for terminal/rain aesthetic — subtle
-  const rv = Math.round(b*160+10 + lead*20);
-  const gv = Math.round(b*210+20 + lead*15);
-  const bv = Math.round(b*140+14 + lead*10);
-  return { ch: charAt(b,'std'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.min(255,bv)})` };
+  const nx=c/cols,ny=r/rows,colSeed=Noise.n2(nx*8.3,0)*0.5+0.5,speed=0.4+colSeed*0.8,phase=colSeed*Math.PI*2,head=((t*speed+phase)%(Math.PI*2))/(Math.PI*2),dist=ny-head;
+  const lead=Math.max(0,1-Math.abs(dist)*26)*0.9,tail=dist<0?Math.exp(dist*14)*0.55:0,noise=Noise.fbm(nx*4+t*.06,ny*5+t*.04,2)*0.5+0.5;
+  const b=Math.min(0.95,lead+tail*0.7+noise*0.06);
+  const rv=Math.round(b*160+10+lead*20),gv=Math.round(b*210+20+lead*15),bv=Math.round(b*140+14+lead*10);
+  return{ch:charAt(b,'std'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.min(255,bv)})`};
 }
 
-// 10 — Kern Study: horizontal density bands with noise-perturbed edges
 function sceneKernStudy(c,r,cols,rows,t){
-  const nx=c/cols, ny=r/rows;
-  // horizontal density gradient: light→dark→light rhythm
-  const band_freq = 3.8;
-  const base = Math.sin(nx * Math.PI * band_freq + t * 0.12) * 0.5 + 0.5;
-  // perturb horizontally with noise
-  const perturb = Noise.fbm(nx*5+t*0.06, ny*3, 4) * 0.5 + 0.5;
-  const edge_noise = Noise.fbm(nx*12+t*0.04, ny*8, 2) * 0.5 + 0.5;
-  // vertical gradient: slightly heavier at center
-  const vy = 1 - Math.abs(ny - 0.5) * 0.6;
-  const b = Math.min(0.94, (base*0.55 + perturb*0.3 + edge_noise*0.12) * vy);
-  // warm tint with the amber signature
-  const warmth = base;
-  const rv = Math.round(b*195+18 + warmth*20);
-  const gv = Math.round(b*165+14 + warmth*10);
-  const bv = Math.round(b*110+8);
-  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})` };
+  const nx=c/cols,ny=r/rows,base=Math.sin(nx*Math.PI*3.8+t*0.12)*0.5+0.5,perturb=Noise.fbm(nx*5+t*0.06,ny*3,4)*0.5+0.5,edge_noise=Noise.fbm(nx*12+t*0.04,ny*8,2)*0.5+0.5,vy=1-Math.abs(ny-0.5)*0.6;
+  const b=Math.min(0.94,(base*0.55+perturb*0.3+edge_noise*0.12)*vy),warmth=base;
+  const rv=Math.round(b*195+18+warmth*20),gv=Math.round(b*165+14+warmth*10),bv=Math.round(b*110+8);
+  return{ch:charAt(b,'typo'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${bv})`};
 }
 
-// 11 — Ascender: vertical zones mapping cap/x/base/descender to brightness
 function sceneAscender(c,r,cols,rows,t){
-  const nx=c/cols, ny=r/rows;
-  // typographic zones (top to bottom: ascender, cap, x-height, baseline, descender)
-  // these slowly breathe via time
-  const breath = Math.sin(t*0.2)*0.015;
-  const zones = [
-    { y: 0.12 + breath, w: 0.06, b: 0.25, label:'ascender' },
-    { y: 0.28 + breath, w: 0.09, b: 0.82, label:'cap' },
-    { y: 0.50,          w: 0.08, b: 0.65, label:'x-height' },
-    { y: 0.67 - breath, w: 0.05, b: 0.92, label:'baseline' },
-    { y: 0.82 - breath, w: 0.05, b: 0.35, label:'descender'},
-  ];
-  // accumulate brightness from all zones
-  let totalB = 0;
-  zones.forEach(z => {
-    const d = Math.abs(ny - z.y);
-    const contrib = Math.max(0, 1 - d / z.w) * z.b;
-    totalB = Math.max(totalB, contrib);
-  });
-  // horizontal noise texture
-  const texture = Noise.fbm(nx*8+t*0.04, ny*5, 3)*0.5+0.5;
-  // vignette
-  const vig = Math.min(nx, 1-nx)*4;
-  const b = Math.min(0.92, (totalB*0.8 + texture*0.14) * Math.min(1, vig));
-  // warm tones for the heavier zones, cool for hairlines
-  const warm = totalB;
-  const rv = Math.round(b*200+15 + warm*22);
-  const gv = Math.round(b*168+12 + warm*12);
-  const bv = Math.round(b*120+10 - warm*8);
-  return { ch: charAt(b,'typo'), color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.max(0,bv)})` };
+  const nx=c/cols,ny=r/rows,breath=Math.sin(t*0.2)*0.015;
+  const zones=[{y:0.12+breath,w:0.06,b:0.25},{y:0.28+breath,w:0.09,b:0.82},{y:0.50,w:0.08,b:0.65},{y:0.67-breath,w:0.05,b:0.92},{y:0.82-breath,w:0.05,b:0.35}];
+  let totalB=0;zones.forEach(z=>{const d=Math.abs(ny-z.y),contrib=Math.max(0,1-d/z.w)*z.b;totalB=Math.max(totalB,contrib);});
+  const texture=Noise.fbm(nx*8+t*0.04,ny*5,3)*0.5+0.5,vig=Math.min(nx,1-nx)*4,b=Math.min(0.92,(totalB*0.8+texture*0.14)*Math.min(1,vig)),warm=totalB;
+  const rv=Math.round(b*200+15+warm*22),gv=Math.round(b*168+12+warm*12),bv=Math.round(b*120+10-warm*8);
+  return{ch:charAt(b,'typo'),color:`rgb(${Math.min(255,rv)},${Math.min(255,gv)},${Math.max(0,bv)})`};
 }
 
-// 12 — Moiré: two sinusoidal interference grids with phase animation
 function sceneMoire(c,r,cols,rows,t){
-  const nx=(c/cols)*2-1, ny=(r/rows)*2-1;
-  // two grids at slightly different spatial frequencies
-  const freq1 = 5.8, freq2 = 6.3;
-  const angle1 = 0.0,     angle2 = 0.22; // slight rotation between grids
-  // grid 1
-  const g1x = Math.cos(angle1), g1y = Math.sin(angle1);
-  const v1 = Math.sin((nx*g1x + ny*g1y)*Math.PI*freq1 + t*0.08)*0.5+0.5;
-  // grid 2
-  const g2x = Math.cos(angle2), g2y = Math.sin(angle2);
-  const v2 = Math.sin((nx*g2x + ny*g2y)*Math.PI*freq2 - t*0.06)*0.5+0.5;
-  // interference (multiply = moiré beating pattern)
-  const moire = v1 * v2;
-  // radial vignette
-  const vign = Math.max(0, 1 - (nx*nx+ny*ny)*0.45);
-  const b = Math.min(0.93, Math.pow(moire * vign, 0.72));
-  // cool blue-white palette for optical/geometric feel
-  const rv = Math.round(b*170+14);
-  const gv = Math.round(b*185+16);
-  const bv = Math.round(b*210+20);
-  return { ch: charAt(b,'shp'), color:`rgb(${rv},${gv},${bv})` };
+  const nx=(c/cols)*2-1,ny=(r/rows)*2-1,freq1=5.8,freq2=6.3,angle1=0.0,angle2=0.22;
+  const g1x=Math.cos(angle1),g1y=Math.sin(angle1),v1=Math.sin((nx*g1x+ny*g1y)*Math.PI*freq1+t*0.08)*0.5+0.5;
+  const g2x=Math.cos(angle2),g2y=Math.sin(angle2),v2=Math.sin((nx*g2x+ny*g2y)*Math.PI*freq2-t*0.06)*0.5+0.5;
+  const moire=v1*v2,vign=Math.max(0,1-(nx*nx+ny*ny)*0.45),b=Math.min(0.93,Math.pow(moire*vign,0.72));
+  const rv=Math.round(b*170+14),gv=Math.round(b*185+16),bv=Math.round(b*210+20);
+  return{ch:charAt(b,'shp'),color:`rgb(${rv},${gv},${bv})`};
 }
 
 /* ─────────────────────────────────────────────
    ALL WORKS DATA
 ───────────────────────────────────────────── */
 const WORKS = [
-  {
-    num:'01', title:'Oculus', year:'2024',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Ellipse SDF + angular fBm',
-    dimensions:'64 × 40 cols/rows',
-    technique:'Proportional canvas',
-    tags:['Organic','SDF','fBm'],
-    desc:'The iris as architecture. Dense glyphs anchor shadow; hairline glyphs breathe in light. The pupil slowly drifts on a Lissajous path — a living, proportional eye.',
-    note:'The iris ramp uses three overlapping fBm octaves sampled in polar coordinates around the pupil centre. Angular coordinates produce the characteristic radial fibre texture of iris stroma.',
-    fn: sceneEye, cols:52, rows:36, sz:9, sp:.85
-  },
-  {
-    num:'02', title:'Cascade', year:'2023',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Vertical fBm with time offset',
-    dimensions:'36 × 44 cols/rows',
-    technique:'5-octave flow field',
-    tags:['Organic','Flow','Cool Palette'],
-    desc:'Water rendered in text — vertical noise displacement creates the illusion of downward flow, with turbulent edge-fade at the left and right margins.',
-    note:'The flow field is a 5-octave fBm with the y-axis offset by time. Edge falloff uses a smooth minimum of the column's normalised x-position, preventing hard vertical margins.',
-    fn: sceneCascade, cols:36, rows:44, sz:8.5, sp:1.1
-  },
-  {
-    num:'03', title:'Meridian', year:'2023',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Diagonal SDF beam + Perlin scatter',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Chiaroscuro beam',
-    tags:['Geometric','Light Beam','Warm Palette'],
-    desc:'A single shaft of light crosses the grid diagonally — noise scatter simulates atmospheric diffusion of light through the character field.',
-    note:'The beam is computed as a signed distance to a diagonal line y=x, modulated by sin(t). The scatter field adds volumetric noise to prevent the beam from reading as a sharp edge.',
-    fn: sceneMeridian, cols:36, rows:44, sz:8.5, sp:.7
-  },
-  {
-    num:'04', title:'Penumbra', year:'2022',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Sphere SDF · Lambertian diffuse',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Photorealistic shading',
-    tags:['Geometric','SDF','Shading'],
-    desc:'A sphere illuminated from above-left — the Lambertian reflectance model applied through glyph density, creating photorealistic shadow on a typographic surface.',
-    note:'The surface normal at each point is computed from the sphere SDF gradient. Diffuse term: max(0, N·L). Sub-surface scatter is approximated by a low-frequency noise overlay on the lit face.',
-    fn: scenePenumbra, cols:36, rows:44, sz:8.5, sp:.6
-  },
-  {
-    num:'05', title:'Liminal', year:'2021',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Layered atmospheric fBm',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Atmospheric horizon',
-    tags:['Abstract','Atmosphere','Horizon'],
-    desc:'The moment before and after — a horizon line that breathes with the noise, lit by an amber glow that bleeds into ground fog.',
-    note:'The horizon is a noise-perturbed horizontal line at y≈0.44. Sky brightness uses an inverse linear gradient; ground uses a steeper power curve. The amber glow is a gaussian falloff around the horizon.',
-    fn: sceneLiminal, cols:36, rows:44, sz:8.5, sp:.9
-  },
-  {
-    num:'06', title:'Threshold', year:'2019',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Logarithmic spiral SDF',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Polar mathematics',
-    tags:['Abstract','Spiral','Cool Palette'],
-    desc:'A vortex defined by polar mathematics — the spiral arms emerge from the intersection of angle, radius, and noise time.',
-    note:'The spiral function is |sin(θ·4 − r·7.5 + t·0.28)| in polar coordinates. The radial falloff prevents edge saturation. Noise overlay adds micro-texture to prevent the arms from reading as pure geometry.',
-    fn: sceneThreshold, cols:36, rows:44, sz:8.5, sp:1.0
-  },
-  {
-    num:'07', title:'Logotype Wave', year:'2024',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Compound sinusoidal wave displacement',
-    dimensions:'62 × 26 cols/rows',
-    technique:'Waveform typographic sculpting',
-    tags:['Typographic','Wave','Displacement'],
-    desc:'Typographic columns displaced by a compound sine wave — two frequencies beating against each other produce the waveform, the letterforms the medium.',
-    note:'Two sine waves (f₁=3.2, f₂=1.1) combine with independent phase velocities. The wave envelope is a gaussian falloff centred at y=0.5. Character density increases at the wave crest.',
-    fn: sceneLogotypeWave, cols:62, rows:26, sz:9, sp:.7
-  },
-  {
-    num:'08', title:'Baseline Drift', year:'2023',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Per-column noise-driven baseline displacement',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Typographic rhythm study',
-    tags:['Typographic','Rhythm','Baseline'],
-    desc:'Typographic baselines as subject — each column drifts independently on a noise-time path, making the invisible grid visible and unstable.',
-    note:'Three horizontal zones (cap, x-height, descender) are rendered as thin density bands. Each column\'s y-offset is driven by a 1D noise slice at that column\'s x position, animating over time.',
-    fn: sceneBaselineDrift, cols:36, rows:44, sz:8.5, sp:.9
-  },
-  {
-    num:'09', title:'Glyph Rain', year:'2023',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Per-column phase sinusoidal drop + exponential trail',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Luminance precipitation',
-    tags:['Typographic','Rain','Cascade'],
-    desc:'Characters fall with independent phase offsets per column — density trails simulate a luminous precipitation of pure letterform.',
-    note:'Each column has a unique speed (0.4–1.2×) and phase seeded by column-index noise. The head is a gaussian peak; the tail uses exponential decay for a falling comet / raindrop appearance.',
-    fn: sceneGlyphRain, cols:36, rows:44, sz:8.5, sp:1.0
-  },
-  {
-    num:'10', title:'Kern Study', year:'2022',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Horizontal density gradient · noise-perturbed kerning bands',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Negative space as form',
-    tags:['Typographic','Spacing','Gradient'],
-    desc:'Kerning — the negative space between letters — made tangible. Horizontal density bands shift with noise, making space itself the subject.',
-    note:'A sine wave across the x-axis creates alternating light/dense vertical bands at frequency 3.8. Two noise layers (coarse + fine) perturb the band edges to prevent the pattern reading as mechanical.',
-    fn: sceneKernStudy, cols:36, rows:44, sz:8.5, sp:.8
-  },
-  {
-    num:'11', title:'Ascender', year:'2022',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Vertical typographic zone mapping',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Cap-height height field',
-    tags:['Typographic','Zones','Cap Height'],
-    desc:'The typographic vertical axis — cap height, x-height, baseline, descender — made spatial through brightness and glyph selection mapping density to height.',
-    note:'Five typographic zones are rendered as gaussian bands at fixed y positions. Band widths correspond to traditional typographic proportions (cap-height widest, hairline descender thinnest). All zones breathe via a low-frequency sine.',
-    fn: sceneAscender, cols:36, rows:44, sz:8.5, sp:.6
-  },
-  {
-    num:'12', title:'Moiré', year:'2016',
-    medium:'IBM Plex Mono Light · 300wt',
-    algorithm:'Dual sinusoidal grid interference',
-    dimensions:'36 × 44 cols/rows',
-    technique:'Phase-animated beating pattern',
-    tags:['Geometric','Interference','Moiré'],
-    desc:'Two sine grids at slightly different spatial frequencies produce an interference moiré — the beating pattern animated in real time through phase drift.',
-    note:'Grid 1 is axis-aligned (θ=0°), grid 2 is rotated by 12.6°. Spatial frequencies differ by 0.5 cycles/unit. The product of both fields produces moiré beating; phase drifts at ±0.07 rad/tick.',
-    fn: sceneMoire, cols:36, rows:44, sz:8.5, sp:.5
-  },
+  { num:'01',title:'Oculus',year:'2024',medium:'IBM Plex Mono Light · 300wt',algorithm:'Ellipse SDF + angular fBm',dimensions:'64 × 40 cols/rows',technique:'Proportional canvas',tags:['Organic','SDF','fBm'],desc:'The iris as architecture. Dense glyphs anchor shadow; hairline glyphs breathe in light. The pupil slowly drifts on a Lissajous path — a living, proportional eye.',note:'The iris ramp uses three overlapping fBm octaves sampled in polar coordinates around the pupil centre. Angular coordinates produce the characteristic radial fibre texture of iris stroma.',fn:sceneEye,fontSize:9,sp:.85},
+  { num:'02',title:'Cascade',year:'2023',medium:'IBM Plex Mono Light · 300wt',algorithm:'Vertical fBm with time offset',dimensions:'36 × 44 cols/rows',technique:'5-octave flow field',tags:['Organic','Flow','Cool Palette'],desc:'Water rendered in text — vertical noise displacement creates the illusion of downward flow, with turbulent edge-fade at the left and right margins.',note:'The flow field is a 5-octave fBm with the y-axis offset by time. Edge falloff uses a smooth minimum of the column\'s normalised x-position.',fn:sceneCascade,fontSize:8.5,sp:1.1},
+  { num:'03',title:'Meridian',year:'2023',medium:'IBM Plex Mono Light · 300wt',algorithm:'Diagonal SDF beam + Perlin scatter',dimensions:'36 × 44 cols/rows',technique:'Chiaroscuro beam',tags:['Geometric','Light Beam','Warm Palette'],desc:'A single shaft of light crosses the grid diagonally — noise scatter simulates atmospheric diffusion of light through the character field.',note:'The beam is computed as a signed distance to a diagonal line y=x, modulated by sin(t).',fn:sceneMeridian,fontSize:8.5,sp:.7},
+  { num:'04',title:'Penumbra',year:'2022',medium:'IBM Plex Mono Light · 300wt',algorithm:'Sphere SDF · Lambertian diffuse',dimensions:'36 × 44 cols/rows',technique:'Photorealistic shading',tags:['Geometric','SDF','Shading'],desc:'A sphere illuminated from above-left — the Lambertian reflectance model applied through glyph density, creating photorealistic shadow on a typographic surface.',note:'Surface normal at each point computed from sphere SDF gradient. Diffuse term: max(0, N·L).',fn:scenePenumbra,fontSize:8.5,sp:.6},
+  { num:'05',title:'Liminal',year:'2021',medium:'IBM Plex Mono Light · 300wt',algorithm:'Layered atmospheric fBm',dimensions:'36 × 44 cols/rows',technique:'Atmospheric horizon',tags:['Abstract','Atmosphere','Horizon'],desc:'The moment before and after — a horizon line that breathes with the noise, lit by an amber glow that bleeds into ground fog.',note:'The horizon is a noise-perturbed horizontal line at y≈0.44. Sky brightness uses an inverse linear gradient; ground uses a steeper power curve.',fn:sceneLiminal,fontSize:8.5,sp:.9},
+  { num:'06',title:'Threshold',year:'2019',medium:'IBM Plex Mono Light · 300wt',algorithm:'Logarithmic spiral SDF',dimensions:'36 × 44 cols/rows',technique:'Polar mathematics',tags:['Abstract','Spiral','Cool Palette'],desc:'A vortex defined by polar mathematics — the spiral arms emerge from the intersection of angle, radius, and noise time.',note:'The spiral function is |sin(θ·4 − r·7.5 + t·0.28)| in polar coordinates. The radial falloff prevents edge saturation.',fn:sceneThreshold,fontSize:8.5,sp:1.0},
+  { num:'07',title:'Logotype Wave',year:'2024',medium:'IBM Plex Mono Light · 300wt',algorithm:'Compound sinusoidal wave displacement',dimensions:'62 × 26 cols/rows',technique:'Waveform typographic sculpting',tags:['Typographic','Wave','Displacement'],desc:'Typographic columns displaced by a compound sine wave — two frequencies beating against each other produce the waveform, the letterforms the medium.',note:'Two sine waves (f₁=3.2, f₂=1.1) combine with independent phase velocities. Character density increases at the wave crest.',fn:sceneLogotypeWave,fontSize:9,sp:.7},
+  { num:'08',title:'Baseline Drift',year:'2023',medium:'IBM Plex Mono Light · 300wt',algorithm:'Per-column noise-driven baseline displacement',dimensions:'36 × 44 cols/rows',technique:'Typographic rhythm study',tags:['Typographic','Rhythm','Baseline'],desc:'Typographic baselines as subject — each column drifts independently on a noise-time path, making the invisible grid visible and unstable.',note:'Three horizontal zones (cap, x-height, descender) are rendered as thin density bands. Each column\'s y-offset is driven by a 1D noise slice at that column\'s x position.',fn:sceneBaselineDrift,fontSize:8.5,sp:.9},
+  { num:'09',title:'Glyph Rain',year:'2023',medium:'IBM Plex Mono Light · 300wt',algorithm:'Per-column phase sinusoidal drop + exponential trail',dimensions:'36 × 44 cols/rows',technique:'Luminance precipitation',tags:['Typographic','Rain','Cascade'],desc:'Characters fall with independent phase offsets per column — density trails simulate a luminous precipitation of pure letterform.',note:'Each column has a unique speed (0.4–1.2×) and phase seeded by column-index noise. The head is a gaussian peak; the tail uses exponential decay.',fn:sceneGlyphRain,fontSize:8.5,sp:1.0},
+  { num:'10',title:'Kern Study',year:'2022',medium:'IBM Plex Mono Light · 300wt',algorithm:'Horizontal density gradient · noise-perturbed kerning bands',dimensions:'36 × 44 cols/rows',technique:'Negative space as form',tags:['Typographic','Spacing','Gradient'],desc:'Kerning — the negative space between letters — made tangible. Horizontal density bands shift with noise, making space itself the subject.',note:'A sine wave across the x-axis creates alternating light/dense vertical bands at frequency 3.8. Two noise layers perturb band edges.',fn:sceneKernStudy,fontSize:8.5,sp:.8},
+  { num:'11',title:'Ascender',year:'2022',medium:'IBM Plex Mono Light · 300wt',algorithm:'Vertical typographic zone mapping',dimensions:'36 × 44 cols/rows',technique:'Cap-height height field',tags:['Typographic','Zones','Cap Height'],desc:'The typographic vertical axis — cap height, x-height, baseline, descender — made spatial through brightness and glyph selection mapping density to height.',note:'Five typographic zones rendered as gaussian bands at fixed y positions. Band widths correspond to traditional typographic proportions.',fn:sceneAscender,fontSize:8.5,sp:.6},
+  { num:'12',title:'Moiré',year:'2016',medium:'IBM Plex Mono Light · 300wt',algorithm:'Dual sinusoidal grid interference',dimensions:'36 × 44 cols/rows',technique:'Phase-animated beating pattern',tags:['Geometric','Interference','Moiré'],desc:'Two sine grids at slightly different spatial frequencies produce an interference moiré — the beating pattern animated in real time through phase drift.',note:'Grid 1 is axis-aligned (θ=0°), grid 2 is rotated by 12.6°. Spatial frequencies differ by 0.5 cycles/unit.',fn:sceneMoire,fontSize:8.5,sp:.5},
 ];
 
 /* ─────────────────────────────────────────────
@@ -1560,49 +1327,77 @@ const Loops = (() => {
   const active = new Map();
   function start(id, fn) {
     stop(id);
-    let t=0;
-    function tick(){fn(t);t+=0.016;active.set(id,requestAnimationFrame(tick));}
-    active.set(id,requestAnimationFrame(tick));
+    let t = 0;
+    function tick() { fn(t); t += 0.016; active.set(id, requestAnimationFrame(tick)); }
+    active.set(id, requestAnimationFrame(tick));
   }
-  function stop(id){if(active.has(id)){cancelAnimationFrame(active.get(id));active.delete(id);}}
-  function stopAll(){for(const[id]of active)stop(id);}
-  return{start,stop,stopAll};
+  function stop(id) { if(active.has(id)){cancelAnimationFrame(active.get(id));active.delete(id);} }
+  function stopAll() { for(const [id] of active) stop(id); }
+  return { start, stop, stopAll };
 })();
 
 /* ─────────────────────────────────────────────
-   CARD ANIMATIONS
+   FIX: FONT-AWARE CARD INITIALISATION
+   Wait for fonts before attaching IntersectionObserver,
+   preventing blank frames where canvas reads wrong glyph widths.
 ───────────────────────────────────────────── */
-document.querySelectorAll('.work-card').forEach(card => {
-  const idx = parseInt(card.dataset.index);
-  const w = WORKS[idx];
-  if (!w) return;
-  const canvas = card.querySelector('canvas');
-  if (!canvas) return;
+function initCards() {
+  document.querySelectorAll('.work-card').forEach(card => {
+    const idx = parseInt(card.dataset.index);
+    const w = WORKS[idx];
+    if (!w) return;
+    const canvas = card.querySelector('canvas');
+    if (!canvas) return;
 
-  const iob = new IntersectionObserver(([e]) => {
-    if (e.isIntersecting) {
-      Loops.start('card-'+idx, t => renderToCanvas(canvas, w.cols, w.rows, w.fn, t*w.sp, w.sz));
-      iob.disconnect();
-    }
-  }, { threshold: 0.04 });
-  iob.observe(card);
+    const iob = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        Loops.start('card-' + idx, t => renderFill(canvas, w.fn, t * w.sp, w.fontSize));
+        iob.disconnect();
+      }
+    }, { threshold: 0.04 });
+    iob.observe(card);
 
-  // Click to open modal
-  card.addEventListener('click', () => openModal(idx));
-});
+    card.addEventListener('click', () => openModal(idx));
+  });
+}
+
+/* FIX: use document.fonts.ready so IBM Plex Mono is loaded before any render */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(initCards);
+} else {
+  window.addEventListener('load', initCards);
+}
+
+/* ─────────────────────────────────────────────
+   FIX: RESIZE OBSERVER — redraws on container resize
+   Without this, canvases went stale after window resize.
+───────────────────────────────────────────── */
+if (typeof ResizeObserver !== 'undefined') {
+  const ro = new ResizeObserver(() => {
+    // Loops will naturally redraw on next tick; no action needed
+    // but we force a single immediate redraw on each visible card
+    document.querySelectorAll('.work-ascii-wrap canvas').forEach(canvas => {
+      const idx = parseInt(canvas.closest('.work-card').dataset.index);
+      const w = WORKS[idx];
+      if (w && canvas.width > 0) {
+        renderFill(canvas, w.fn, 0, w.fontSize);
+      }
+    });
+  });
+  ro.observe(document.getElementById('works-grid'));
+}
 
 /* ─────────────────────────────────────────────
    MODAL
 ───────────────────────────────────────────── */
 let modalIndex = -1;
-let modalLoopId = 'modal-canvas-loop';
+const modalLoopId = 'modal-canvas-loop';
 
 function openModal(idx) {
   const w = WORKS[idx];
   if (!w) return;
   modalIndex = idx;
 
-  // Build info panel
   const info = document.getElementById('modal-info');
   info.innerHTML = `
     <div>
@@ -1610,27 +1405,15 @@ function openModal(idx) {
       <h2 class="modal-title">${w.title}</h2>
       <span class="modal-year">${w.year}</span>
       <div class="modal-spec-grid">
-        <div class="modal-spec">
-          <span class="modal-spec-label">Medium</span>
-          <span class="modal-spec-val">${w.medium}</span>
-        </div>
-        <div class="modal-spec">
-          <span class="modal-spec-label">Algorithm</span>
-          <span class="modal-spec-val">${w.algorithm}</span>
-        </div>
-        <div class="modal-spec">
-          <span class="modal-spec-label">Grid</span>
-          <span class="modal-spec-val">${w.dimensions}</span>
-        </div>
-        <div class="modal-spec">
-          <span class="modal-spec-label">Technique</span>
-          <span class="modal-spec-val">${w.technique}</span>
-        </div>
+        <div class="modal-spec"><span class="modal-spec-label">Medium</span><span class="modal-spec-val">${w.medium}</span></div>
+        <div class="modal-spec"><span class="modal-spec-label">Algorithm</span><span class="modal-spec-val">${w.algorithm}</span></div>
+        <div class="modal-spec"><span class="modal-spec-label">Grid</span><span class="modal-spec-val">${w.dimensions}</span></div>
+        <div class="modal-spec"><span class="modal-spec-label">Technique</span><span class="modal-spec-val">${w.technique}</span></div>
       </div>
       <div class="modal-divider"></div>
       <p class="modal-desc">${w.desc}</p>
       <div class="modal-process-note"><p><strong style="color:var(--accent);font-style:normal">Technical note —</strong> ${w.note}</p></div>
-      <div class="modal-tech-row">${w.tags.map(t=>`<span class="tech-pill">${t}</span>`).join('')}</div>
+      <div class="modal-tech-row">${w.tags.map(tg=>`<span class="tech-pill">${tg}</span>`).join('')}</div>
       <div class="modal-glyph-excerpt" id="modal-excerpt">Loading…</div>
     </div>
     <div class="modal-nav">
@@ -1639,38 +1422,27 @@ function openModal(idx) {
     </div>
   `;
 
-  // Nav buttons
-  document.getElementById('modal-prev').addEventListener('click', e => { e.stopPropagation(); openModal((idx - 1 + WORKS.length) % WORKS.length); });
-  document.getElementById('modal-next').addEventListener('click', e => { e.stopPropagation(); openModal((idx + 1) % WORKS.length); });
+  document.getElementById('modal-prev').addEventListener('click', e => { e.stopPropagation(); openModal((idx-1+WORKS.length)%WORKS.length); });
+  document.getElementById('modal-next').addEventListener('click', e => { e.stopPropagation(); openModal((idx+1)%WORKS.length); });
 
-  // Start canvas loop
   const mc = document.getElementById('modal-canvas');
   Loops.stop(modalLoopId);
+  let firstFrame = true;
   Loops.start(modalLoopId, t => {
-    renderToCanvas(mc, w.cols+10, Math.floor(w.rows*1.1), w.fn, t*w.sp, w.sz+1);
-    // generate text excerpt from current frame
-    if (t < 0.1) {
-      setTimeout(() => buildExcerpt(w, mc), 60);
-    }
+    renderToCanvas(mc, 52, 38, w.fn, t * w.sp, 10);
+    if (firstFrame) { firstFrame = false; setTimeout(() => buildExcerpt(w), 80); }
   });
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function buildExcerpt(w, canvas) {
+function buildExcerpt(w) {
   const ex = document.getElementById('modal-excerpt');
   if (!ex) return;
-  // Generate a tiny ASCII snapshot using the std ramp as pre-text
-  const cols2 = 58, rows2 = 5;
-  let txt = '';
-  for (let r=0; r<rows2; r++) {
-    for (let c=0; c<cols2; c++) {
-      const { ch } = w.fn(c, r, cols2, rows2, 0.5);
-      txt += ch;
-    }
-    if (r < rows2-1) txt += '\n';
-  }
+  const cols2=58, rows2=5;
+  let txt='';
+  for(let r=0;r<rows2;r++){for(let c=0;c<cols2;c++){const {ch}=w.fn(c,r,cols2,rows2,0.5);txt+=ch;}if(r<rows2-1)txt+='\n';}
   ex.textContent = txt;
 }
 
@@ -1682,10 +1454,8 @@ function closeModal() {
 }
 
 document.getElementById('modal-close').addEventListener('click', closeModal);
-document.getElementById('modal-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-});
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.getElementById('modal-overlay').addEventListener('click', e => { if(e.target===document.getElementById('modal-overlay'))closeModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape')closeModal(); });
 
 /* ─────────────────────────────────────────────
    FILTER
@@ -1697,12 +1467,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     const filter = btn.dataset.filter;
     document.querySelectorAll('.work-card').forEach(card => {
       const cat = card.dataset.category;
-      if (filter === 'all' || cat === filter) {
-        card.style.display = '';
-        // reset span for featured if in grid mode
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = (filter==='all'||cat===filter) ? '' : 'none';
     });
   });
 });
@@ -1725,8 +1490,7 @@ document.getElementById('view-list').addEventListener('click', () => {
    CURSOR
 ───────────────────────────────────────────── */
 (function(){
-  const dot=document.getElementById('cursor');
-  const trail=document.getElementById('cursor-trail');
+  const dot=document.getElementById('cursor'),trail=document.getElementById('cursor-trail');
   if(!dot||!trail)return;
   let mx=0,my=0,tx=0,ty=0;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
@@ -1738,21 +1502,13 @@ document.getElementById('view-list').addEventListener('click', () => {
 })();
 
 /* ─────────────────────────────────────────────
-   SCROLL FADE-UPS
+   SCROLL FADE-UPS + NAV
 ───────────────────────────────────────────── */
 (function(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
-  },{threshold:.1});
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
   document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 })();
-
-/* ─────────────────────────────────────────────
-   NAV ACTIVE STATE
-───────────────────────────────────────────── */
-document.querySelectorAll('.nav-links a').forEach(a=>{
-  if(a.getAttribute('href')==='works.html')a.classList.add('active');
-});
+document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('href')==='works.html')a.classList.add('active');});
 document.getElementById('nav-indicator').textContent='Works';
 document.querySelector('.page-wrap').classList.add('page-enter');
 </script>
